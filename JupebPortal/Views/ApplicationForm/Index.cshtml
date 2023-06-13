@@ -1,0 +1,130 @@
+﻿@model IEnumerable<JupebPortal.Models.ApplicationForm>
+@{
+    ViewData["Title"] = "Applications";
+}
+
+
+<div class="container p-3">
+    <b />
+    
+    <div class="row pt-4">
+        <div class="col-6">
+            <h2 class="text-primary">Applications</h2>
+        </div>
+
+    </div>
+</div>
+
+<table class="table table-bordered table-striped table-responsive" style="width:100%" id="myTable">
+    <thead>
+        <tr>
+            <th>
+               Surname
+            </th>
+
+            <th>
+                First Name
+            </th>
+            <th>
+                Other Name
+            </th>
+            <th>
+                Email
+            </th>
+            <th>
+                Gender
+            </th>
+            <th>
+                Phone
+            </th>
+            <th>
+                Date Of Birth
+            </th>
+            <th>
+                Address
+            </th>
+            <th>
+                State
+            </th>
+            
+            <th>
+                First Choice
+            </th>
+            <th>
+                Second Choice
+            </th>
+            <th>
+                O Level Subjects
+            </th>
+            
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td width="12%">
+                    @Html.DisplayFor(modelItem => item.Surname)
+                </td>
+                <td width="12%">
+                    @Html.DisplayFor(modelItem => item.FirstName)
+                </td>
+                <td width="12%">
+                    @Html.DisplayFor(modelItem => item.OtherName)
+                </td>
+                <td width="15%">
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td width="10%">
+                    @Html.DisplayFor(modelItem => item.Gender)
+                </td>
+                <td width="10%">
+                    @Html.DisplayFor(modelItem => item.Phone)
+                </td>
+                <td width="10%">
+                    @Html.DisplayFor(modelItem => item.DateOfBirth)
+                </td>
+                <td width="12%">
+                    @Html.DisplayFor(modelItem => item.Address)
+                </td>
+                <td width="12%">
+                    @Html.DisplayFor(modelItem => item.StateOfOrigin)
+                </td>
+                
+                
+                <td width="70%">
+                    @Html.DisplayFor(modelItem => item.Programme1.Name)
+                </td>
+                <td width="70%">
+                    @Html.DisplayFor(modelItem => item.Programme2.Name)
+                </td>
+                <td width="90%">
+                    <ol>
+                        @foreach (var sub in item.OLevelScores)
+                        {
+                            <li>@sub.Subject.Name : @sub.Grade</li>
+                        }
+                    </ol>
+                </td>
+ 
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#myTable').DataTable(
+                {
+                    dom: 'Bfrtip',
+                    buttons: [
+                        'copy', 'csv', 'excel', 'pdf', 'print'
+                    ]
+                });
+        });
+
+    </script>
+}
+
+

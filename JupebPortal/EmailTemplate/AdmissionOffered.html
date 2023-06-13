@@ -1,0 +1,62 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <style>
+        .background-image {
+            position: relative;
+            width: 100%;
+        }
+
+            .background-image::before {
+                content: "";
+                background-image: url('https://www.elizadeuniversity.edu.ng/img/eulogo.jpg');
+                background-size: 200px;
+                background-repeat: no-repeat;
+                background-position: center;
+                opacity: 0.3;
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+            }
+    </style>
+</head>
+<body>
+    <div>
+        <div class="background-image">
+            <b>Dear {{UserName}}</b>, <br /><br />
+            Congratulations, you have been offered provisional admission into Elizade University Ilara-Mokin
+            for the program {{Program}} in the Department of {{Department}} as a Full-Time student for the 2023/2024 academic session.<br /><br />
+            Kindly login to the admission portal to accept this admission offer
+            and print your admission letter.<br /><br />
+            Thank you.
+            <br /><br />
+        </div>
+        <div>
+            Admission Office,<br />
+            +234 810-156-3682 | +234 815-835-5812<br />
+            Email: admissions@elizadeuniversity.edu.ng. <br /><br />
+        </div>
+
+        <div>
+            <img src="https://www.elizadeuniversity.edu.ng/img/eulogo.jpg" /><br />
+        </div>
+
+        <div>
+            Elizade University.<br />
+            Wuraola Ade-Ojo Avenue,<br>
+            P.M.B 002, Ilara-Mokin,<br>
+            Ondo-State, Nigeria.<br>
+
+            <a href="www.elizadeuniversity.edu.ng"> www.elizadeuniversity.edu.ng</a><br /><br />
+
+            <i>...Necessity is the mother of invention</i>
+        </div>
+    </div>
+
+
+</body>
+</html>

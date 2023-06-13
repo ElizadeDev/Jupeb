@@ -1,0 +1,595 @@
+﻿@model JupebPortal.Models.ApplicantOLevel
+@using JupebPortal.Enums;
+@using Microsoft.AspNetCore.Identity;
+@using (Html.BeginForm("Create", "OLevelForm", FormMethod.Post)) ;
+
+@{
+    ViewData["Title"] = "O Level Result";
+}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<style>
+    .overlay {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        z-index: 1000;
+        top: 40%;
+        left: 0px;
+        opacity: 0.5;
+        filter: alpha(opacity=50);
+    }
+</style>
+
+<br />
+<h4>Application Form - O' Level Results</h4>
+<hr />
+<div class="page-wrapper p-t-100 p-b-50">
+    <div class="wrapper wrapper--w900">
+        <div class="card card-6">
+            <div class="card-body">
+                <h5 class=" text-center">First Sitting</h5>
+                <form asp-action="Create" id="myForm">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <div class="form-group col-3">
+                        <label asp-for="@Model.ExamBody" class="control-label"></label>
+                        @Html.DropDownListFor(model => model.ExamBody, Enum.GetValues(typeof(ExamBody)).Cast<ExamBody>().Select(e => new SelectListItem { Text = e.ToString(), Value = e.ToString() }), "Select an option", new{@class="form-select"})
+                        <span asp-validation-for="@Model.ExamBody" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-2">
+                        <label asp-for="@Model.ExamYear" class="control-label"></label>
+                        <input asp-for="@Model.ExamYear" class="form-control" />
+                        <span asp-validation-for="@Model.ExamYear" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-2">
+                        <label asp-for="@Model.ExamNo" class="control-label"></label>
+                        <input asp-for="@Model.ExamNo" class="form-control" />
+                        <span asp-validation-for="@Model.ExamNo" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mt-3">
+                        @Html.Hidden("Sitting", "1")
+                    </div>
+
+                    <div class="form-group mt-3">
+                        <label asp-for="@Model.SubjectId" class="control-label"></label>
+                        <select id="subjectBox" asp-for="@Model.SubjectId" class="form-control" asp-items="ViewBag.Subjects"></select>
+                    </div>
+
+                    <div class="form-group mt-3">
+                        <label asp-for="@Model.Grade" class="control-label"></label>
+                        @Html.DropDownListFor(model => model.Grade, Enum.GetValues(typeof(Grade)).Cast<Grade>().Select(e => new SelectListItem { Text = e.ToString(), Value = e.ToString() }), "Select an option", new { id = "gradeDropDown", @class = "form-select" })
+                        <span asp-validation-for="@Model.Grade" class="text-danger"></span>
+                    </div>
+
+                    <br />
+                    <div class="form-group">
+                        <input type="submit" value="Add Subject" class="btn btn-primary" />
+                    </div>
+                    <div id="sitting1error" class="sitting1error text-danger"></div>
+                    <br />
+
+                </form>
+                @{
+                    var results1 = ViewBag.existingSitting1;
+                }
+
+                @if (results1 != null && results1.Count > 0)
+                {
+                    <table id="entryTable" class="table table-sm table-striped">
+                        <thead>
+                            <tr>
+                                <th>Subject</th>
+                                <th>Grade</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var result in results1)
+                            {
+                                <tr>
+                                    <td>@result.Subject.Name</td>
+                                    <td>@result.Grade</td>
+                                    <td><button onclick="deleteSubject1(this)" id="@result.SubjectId" class="btn btn-sm btn-danger">Remove</button></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <table id="entryTable" class="table table-sm table-striped">
+                        <tr>
+                            <th>Subject</th>
+                            <th>Grade</th>
+                            <th></th>
+                        </tr>
+                    </table>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<br />
+
+<div class="row">
+    <div class="col-md-12">
+        <button class="btn btn-primary mb-3 float-end" type="button" data-bs-toggle="collapse" data-bs-target="#secondSittingDiv" aria-expanded="false" aria-controls="secondSittingDiv">
+            Add Second Sitting
+        </button>
+    </div>
+</div>
+
+<div class="page-wrapper p-t-100 p-b-50 collapse" id="secondSittingDiv">
+    <div class="wrapper wrapper--w900">
+        <div class="card card-6">
+            <div class="card-body">
+                <h5 class=" text-center">Second Sitting</h5>
+                <form asp-action="Create" id="myForm2">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+
+                    <div class="form-group col-3">
+                        <label asp-for="@Model.ExamBody" class="control-label"></label>
+                        @Html.DropDownListFor(model => model.ExamBody, Enum.GetValues(typeof(ExamBody)).Cast<ExamBody>().Select(e => new SelectListItem { Text = e.ToString(), Value = e.ToString() }), "Select an option", new{@class="form-select"})
+                        <span asp-validation-for="@Model.ExamBody" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-2">
+                        <label asp-for="@Model.ExamYear" class="control-label"></label>
+                        <input asp-for="@Model.ExamYear" class="form-control" />
+                        <span asp-validation-for="@Model.ExamYear" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-2">
+                        <label asp-for="@Model.ExamNo" class="control-label"></label>
+                        <input asp-for="@Model.ExamNo" class="form-control" />
+                        <span asp-validation-for="@Model.ExamNo" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mt-3">
+                        @Html.Hidden("Sitting", "2")
+                    </div>
+
+                    <div class="form-group mt-3">
+                        <label asp-for="@Model.SubjectId" class="control-label"></label>
+                        <select id="subjectBox2" asp-for="@Model.SubjectId" class="form-control" asp-items="ViewBag.Subjects"></select>
+                    </div>
+
+                    <div class="form-group mt-3">
+                        <label asp-for="@Model.Grade" class="control-label"></label>
+                        @Html.DropDownListFor(model => model.Grade, Enum.GetValues(typeof(Grade)).Cast<Grade>().Select(e => new SelectListItem { Text = e.ToString(), Value = e.ToString() }), "Select an option", new { id = "gradeDropDown2", @class="form-select" })
+                        <span asp-validation-for="@Model.Grade" class="text-danger"></span>
+                    </div>
+
+                    <br />
+                    <div class="form-group">
+                        <input type="submit" value="Add Subject" class="btn btn-primary" />
+                    </div>
+                    <div id="sitting2error" class="sitting2error text-danger"></div>
+                    <br />
+
+                </form>
+                @{
+                    var results2 = ViewBag.existingSitting2;
+
+                }
+
+                @if (results2 != null && results2.Count > 0)
+                {
+                    <table id="entryTable2" class="table table-sm table-striped">
+                        <thead>
+                            <tr>
+                                <th>Subject</th>
+                                <th>Grade</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var result in results2)
+                            {
+                                <tr>
+                                    <td>@result.Subject.Name</td>
+                                    <td>@result.Grade</td>
+                                    <td><button onclick="deleteSubject2(this)" id="@result.SubjectId" class="btn btn-sm btn-danger">Remove</button></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <table id="entryTable2" class="table table-sm table-striped">
+                        <tr>
+                            <th>Subject</th>
+                            <th>Grade</th>
+                            <th></th>
+                        </tr>
+                    </table>
+                }
+            </div>
+            
+        </div>
+    </div>
+</div>
+<br />
+<div class="page-wrapper p-t-100 p-b-50 m-t-1" id="submitDiv">
+    <div class="wrapper wrapper--w900">
+        <div class="card card-6">
+            <div class="card-body">
+                <p>Ensure every information is correctly filled before you submit</p>
+                <div class="btn-toolbar">
+                    <a asp-controller="ApplicationForm" asp-action="Create" class="btn btn-secondary ">&laquo; Previous</a>
+                    <a class="btn btn-success mx-4 text-light" role="button" data-bs-toggle="modal" data-bs-target="#submitModal">Submit</a>
+                    <!-- Button trigger modal -->
+                    
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>
+<br />
+<br />
+
+
+<!-- Submit error modal -->
+<div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="errorModalLabel">Error</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-auto">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="red" class="bi bi-x-circle-fill" viewBox="0 0 16 16">
+                            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z"></path>
+                        </svg>
+                    </div>
+                    <div class="col" id="errorModalMessage">
+                        
+                    </div>
+                </div>
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Submit centered modal -->
+<div class="modal fade" id="submitModal" tabindex="-1" aria-labelledby="submitModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="submitModalLabel">Submit confirmation</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-auto">
+                        
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="yellow" class="bi bi-exclamation-triangle" viewBox="0 0 16 16">
+                            <path d="M7.938 2.016A.13.13 0 0 1 8.002 2a.13.13 0 0 1 .063.016.146.146 0 0 1 .054.057l6.857 11.667c.036.06.035.124.002.183a.163.163 0 0 1-.054.06.116.116 0 0 1-.066.017H1.146a.115.115 0 0 1-.066-.017.163.163 0 0 1-.054-.06.176.176 0 0 1 .002-.183L7.884 2.073a.147.147 0 0 1 .054-.057zm1.044-.45a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566z"></path>
+                            <path d="M7.002 12a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 5.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995z"></path>
+                        </svg>
+                    </div>
+                    <div class="col" id="modalMessage">
+                        Are you sure you want to submit? You will not be able to make changes to your form after submission.
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <a class="btn btn-primary text-light" id="finalSubmit">Submit</a>
+            </div>
+        </div>
+    </div>
+    <!-- Spinner overlay -->
+    <div id="overlayDiv">
+    </div>
+</div>
+
+
+
+
+
+
+
+<script>
+    var entries = []; // Variable to store all the entries
+
+
+    $(document).ready(function () {
+        $('#myForm').submit(function (e) {
+            e.preventDefault(); // Prevent the default form submission
+
+            // Get form data
+            var formData = $(this).serialize();
+
+            // Send AJAX request
+            $.ajax({
+                url: '/OLevelForm/create', 
+                type: 'POST', 
+                data: formData,
+                success: function (response) {
+                    // Handle the successful response
+                    console.log(response);
+                    var subjectInput = document.getElementById("subjectBox");
+                    var gradeInput = document.getElementById("gradeDropDown");
+                    var subjectText = subjectInput.options[subjectInput.selectedIndex].text;
+                    var subjectValue = subjectInput.value;
+                    var gradeValue = gradeInput.value;
+
+                    if (subjectValue !== "" && gradeValue !== "") {
+                        var entry = [subjectValue, gradeValue]; // Create a pair of values
+                        entries.push(entry); // Add the entry to the array
+
+                        subjectInput.value = ""; // Clear the first textbox
+                        $('#sitting1error').text("");
+
+                        var table = document.getElementById("entryTable");
+                        var row = table.insertRow();
+                        var subjectCell = row.insertCell(0);
+                        var gradeCell = row.insertCell(1);
+                        subjectCell.innerHTML = subjectText;
+                        gradeCell.innerHTML = gradeValue;
+
+                        var actionCell = row.insertCell(2);
+                        var button = document.createElement('button');
+                        button.onclick = function () {
+                            deleteSubject1(this);
+                        };
+                        button.id = subjectValue;
+                        button.className = 'btn btn-sm btn-danger';
+                        button.innerHTML = 'Remove';
+                        actionCell.appendChild(button);
+
+                    }
+                },
+                error: function (xhr) {
+                    if (xhr.status === 400) {
+                        var errorMessage = xhr.responseText;
+                        console.log(errorMessage);
+                        $('.sitting1error').html(errorMessage);
+                    } else {
+                        console.error(xhr.responseText);
+                    }
+                }
+            });
+
+        });
+    });
+
+
+
+    $(document).ready(function () {
+        $('#myForm2').submit(function (e) {
+            e.preventDefault(); // Prevent the default form submission
+
+            // Get form data
+            var formData = $(this).serialize();
+
+            // Send AJAX request
+            $.ajax({
+                url: '/OLevelForm/create', 
+                type: 'POST', 
+                data: formData,
+                success: function (response) {
+                    // Handle the successful response
+                    console.log(response);
+                    var subjectInput = document.getElementById("subjectBox2");
+                    var gradeInput = document.getElementById("gradeDropDown2");
+                    var subjectText = subjectInput.options[subjectInput.selectedIndex].text;
+                    var subjectValue = subjectInput.value;
+                    var gradeValue = gradeInput.value;
+
+                    if (subjectValue !== "" && gradeValue !== "") {
+                        var entry = [subjectValue, gradeValue]; // Create a pair of values
+                        entries.push(entry); // Add the entry to the array
+
+                        subjectInput.value = ""; // Clear the first textbox
+                        $('#sitting2error').text("");
+
+                        var table = document.getElementById("entryTable2");
+                        var row = table.insertRow();
+                        var subjectCell = row.insertCell(0);
+                        var gradeCell = row.insertCell(1);
+                        subjectCell.innerHTML = subjectText;
+                        gradeCell.innerHTML = gradeValue;
+
+                        var actionCell = row.insertCell(2);
+                        var button = document.createElement('button');
+                        button.onclick = function () {
+                            deleteSubject2(this);
+                        };
+                        button.id = subjectValue;
+                        button.className = 'btn btn-sm btn-danger';
+                        button.innerHTML = 'Remove';
+                        actionCell.appendChild(button);
+                    }
+                },
+                error: function (xhr) {
+                    if (xhr.status === 400) {
+                        var errorMessage = xhr.responseText;
+                        $('.sitting2error').html(errorMessage);
+                    } else {
+                        console.error(xhr.responseText);
+                    }
+                }
+            });
+
+        });
+    });
+
+
+    function deleteSubject1(button) {
+        var itemId = button.id;
+        // Send AJAX request to delete the item
+        $.ajax({
+            url: '/OLevelForm/DeleteSubject', 
+            type: 'POST',
+            data: { id: itemId, sitting: '1' },
+            success: function (response) {
+                
+                var data = response;
+
+                var table = document.getElementById('entryTable');
+                table.className = 'table table-sm table-striped';
+                table.innerHTML = '';
+
+                // Create a table header row
+                var headerRow = table.insertRow(0);
+
+                // Create heading cells
+                var subjectHeadingCell = document.createElement('th');
+                subjectHeadingCell.innerHTML = 'Subject';
+                headerRow.appendChild(subjectHeadingCell);
+
+                var gradeHeadingCell = document.createElement('th');
+                gradeHeadingCell.innerHTML = 'Grade';
+                headerRow.appendChild(gradeHeadingCell);
+
+                var actionHeadingCell = document.createElement('th');
+                headerRow.appendChild(actionHeadingCell);
+
+                for (var i = 0; i < data.length; i++) {
+                    var row = table.insertRow(i + 1);
+
+                    var subjectCell = row.insertCell(0);
+                    subjectCell.innerHTML = data[i].Name;
+
+
+                    var gradeCell = row.insertCell(1);
+                    gradeCell.innerHTML = data[i].gradeName;
+
+                    var actionCell = row.insertCell(2);
+                    var button = document.createElement('button');
+                    button.onclick = function () {
+                        deleteSubject1(this);
+                    };
+                    button.id = data[i].subjectId;
+                    button.className = 'btn btn-sm btn-danger';
+                    button.innerHTML = 'Remove';
+                    actionCell.appendChild(button);
+                }
+            },
+            error: function (xhr) {
+                console.error(xhr.responseText);
+            }
+        });
+    }
+
+
+
+    function deleteSubject2(button) {
+        var itemId = button.id;
+        // Send AJAX request to delete the item
+        $.ajax({
+            url: '/OLevelForm/DeleteSubject', 
+            type: 'POST',
+            data: { id: itemId, sitting: '2' },
+            success: function (response) {
+                
+                var data = response;
+
+                var table = document.getElementById('entryTable2');
+                table.className = 'table table-sm table-striped';
+                table.innerHTML = '';
+
+                // Create a table header row
+                var headerRow = table.insertRow(0);
+
+                // Create heading cells
+                var subjectHeadingCell = document.createElement('th');
+                subjectHeadingCell.innerHTML = 'Subject';
+                headerRow.appendChild(subjectHeadingCell);
+
+                var gradeHeadingCell = document.createElement('th');
+                gradeHeadingCell.innerHTML = 'Grade';
+                headerRow.appendChild(gradeHeadingCell);
+
+                var actionHeadingCell = document.createElement('th');
+                headerRow.appendChild(actionHeadingCell);
+
+                for (var i = 0; i < data.length; i++) {
+                    var row = table.insertRow(i + 1);
+
+                    var subjectCell = row.insertCell(0);
+                    subjectCell.innerHTML = data[i].Name;
+
+
+                    var gradeCell = row.insertCell(1);
+                    gradeCell.innerHTML = data[i].gradeName;
+
+                    var actionCell = row.insertCell(2);
+                    var button = document.createElement('button');
+                    button.onclick = function () {
+                        deleteSubject2(this);
+                    };
+                    button.id = data[i].subjectId;
+                    button.className = 'btn btn-sm btn-danger';
+                    button.innerHTML = 'Remove';
+                    actionCell.appendChild(button);
+                }
+            },
+            error: function (xhr) {
+                console.error(xhr.responseText);
+            }
+        });
+    }
+
+    $(document).ready(function () {
+        $('#finalSubmit').click(function (e) {
+            e.preventDefault();
+            var html = `<div class="overlay">
+                <div class="d-flex justify-content-center">
+                    <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem; z-index: 20;" aria-hidden="true">
+                            <span class="sr-only"><img src="~/images/elizade.png" /></span>
+                    </div>
+                </div>
+            </div>`;
+            $('#overlayDiv').html(html);
+            // Send AJAX request
+            $.ajax({
+                url: '/ApplicationForm/validateSubjectCount', 
+                type: 'GET', 
+                success: function (response) {
+                    //console.log(response);
+                    window.location.href = '/Home/ApplicationSuccess';
+                },
+                error: function (xhr) {
+                    if (xhr.status === 400) {
+                        var errorMessage = xhr.responseText;
+                        console.log(errorMessage);
+                        $('#errorModalMessage').html(errorMessage);
+                        $('#submitModal').modal('hide');
+                        $('#errorModal').modal('show');
+                        $('#overlayDiv').html('');
+                    } else {
+                        console.error(xhr.responseText);
+                        $('#overlayDiv').html('');
+                    }
+                }
+            });
+
+        });
+    });
+</script>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

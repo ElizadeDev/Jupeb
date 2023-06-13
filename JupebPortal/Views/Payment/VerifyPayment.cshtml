@@ -1,0 +1,100 @@
+﻿@model IEnumerable<JupebPortal.Models.Payment>
+@{
+    ViewData["Title"] = "My Transactions";
+}
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsSHA/2.0.2/sha512.js"></script> <!-- Include jsSHA library -->
+<div class="container p-3">
+    <b />
+
+    <div class="row pt-4">
+        <div class="col-6">
+            <h2 class="text-primary">Transactions</h2>
+        </div>
+
+    </div>
+    <p class="text-info">If you have made a payment and you have not been granted access to the application form, locate the relevant transaction in the table and click the confirm button.</p>
+</div>
+<div class="d-flex align-items-center" id="statusMessage">
+</div>
+<table class="table table-bordered table-striped" style="width:100%" id="myTable">
+    <thead>
+        <tr>
+            <th>
+                Transaction ID
+            </th>
+            <th>
+                Date
+            </th>
+            <th>
+                Purpose
+            </th>
+            <th>
+                Status
+            </th>
+
+            <th>
+                Actions
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var obj in Model)
+        {
+            <tr>
+                <td width="20%">
+                    @obj.TransactionID
+                </td>
+                <td width="25%">
+                    @obj.PaymentDate
+                </td>
+                <td width="30%">
+                    @obj.Purpose
+                </td>
+                <td width="10%">
+                    @(obj.IsSuccess ? "Successful" : "Unknown")
+                </td>
+                <td>
+                    <div class=" btn-group" role="group">
+                        <div id="@obj.TransactionID" onclick="checkStatus(this)" class="btn btn-primary btn-sm mx-2" role="button">Confirm  <span id="spinnerDiv"></span></div>
+                    </div>
+
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section scripts{
+    <script type="text/javascript">
+        function checkStatus(button) {
+            var html = `<div class="spinner-border spinner-border-sm ms-auto" role="status" aria-hidden="true"></div>`
+            var spinnerDivContainer = button.querySelector("span:first-child");
+            spinnerDivContainer.innerHTML = html;
+
+            var transactionId = button.id;
+            var statusMessageContainer = document.getElementById("statusMessage");
+
+            $.ajax({
+                url: '/applicationfee/GetTransactionStatus',
+                type: 'GET',
+                data: { transactionId: transactionId },
+                success: function (response) {
+                    console.log('Payment saved to database', response);
+                    window.location.href = '/ApplicationForm/Create';
+                },
+                error: function (error) {
+                    console.log('Error:', error);
+                    html = `<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                        <strong>Attention!</strong> THE SELECTED TRANSACTION WAS NOT SUCCESSFUL.
+                                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                        </div>`;
+                    statusMessageContainer.innerHTML = html;
+                    spinnerDivContainer.innerHTML = "";
+                }
+            });
+        }
+
+    </script>
+}

@@ -1,0 +1,321 @@
+﻿@model JupebPortal.ViewModels.JupebFormViewModel
+@using JupebPortal.Enums;
+@using Microsoft.AspNetCore.Identity;
+@using (Html.BeginForm("Create", "ApplicationForm", FormMethod.Post));
+
+@{
+	ViewData["Title"] = "Admission Form";
+}
+<div class="container">
+    <div class="card mt-125">
+        <div class="card-title"><h2 class="text-uppercase text-center mt-3">Jupeb Application Form</h2></div>
+        <div class="card-body">
+            <form asp-action="Created" asp-controller="ApplicationForm" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label asp-for="FirstName" class="col-form-label-sm ml-3"></label>
+                    <div class="col-sm-10">
+                        <input asp-for="FirstName" value="@ViewBag.FirstName" readonly class="form-control" />
+                        <span asp-validation-for="FirstName" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Surname" class="col-form-label-sm ml-3"></label>
+                    <div class="col-sm-10">
+                        <input asp-for="Surname" value="@ViewBag.Surname" class="form-control" readonly />
+                        <span asp-validation-for="Surname" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="OtherName" class="col-form-label-sm ml-3"></label>
+                    <div class="col-sm-10">
+                        <input asp-for="OtherName" value="@ViewBag.OtherName" readonly class="form-control" />
+                        <span asp-validation-for="OtherName" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Email" class="col-form-label-sm ml-3"></label>
+                    <div class="col-sm-10">
+                        <input asp-for="Email" value="@ViewBag.Email" readonly class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Phone" class="col-form-label-sm ml-3"></label>
+                    <div class="col-sm-10">
+                        <input asp-for="Phone" class="form-control" required />
+                        <span asp-validation-for="Phone" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Gender" class="col-form-label-sm ml-3"></label>
+                    <div class="col-sm-10">
+                        @Html.DropDownListFor(model => model.Gender, Enum.GetValues(typeof(Gender)).Cast<Gender>().Select(e => new SelectListItem { Text = e.ToString(), Value = e.ToString() }), "Select an option", new{@class="form-select"})
+                        <span asp-validation-for="Gender" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Religion" class="col-form-label-sm ml-3"></label>
+                    <div class="col-sm-10">
+                        <input asp-for="Religion" class="form-control" required />
+                        <span asp-validation-for="Religion" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="PlaceOfBirth" class="col-form-label-sm ml-3"></label>
+                    <div class="col-sm-10">
+                        <input asp-for="PlaceOfBirth" class="form-control" />
+                        <span asp-validation-for="PlaceOfBirth" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="MaritalStatus" class="col-form-label-sm ml-3"></label>
+                    <div class="col-sm-10">
+                        <input asp-for="MaritalStatus" class="form-control" required />
+                        <span asp-validation-for="MaritalStatus" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Photo" class="col-form-label-sm ml-3">Passport Photo:</label>
+                    <div class="col-sm-10">
+                        <div class="custom-file">
+                            <input type="file" asp-for="Photo" class="form-control custom-file-input" accept="image/png, image/jpeg" aria-required="true"/>
+                            @*<label class="custom-file-label">Click here to choose photo </label>*@
+                            <span asp-validation-for="Photo" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Address" class="col-form-label-sm ml-3"></label>
+                    <div class="col-sm-10">
+                        <textarea asp-for="Address" class="form-control"></textarea>
+                        <span asp-validation-for="Address" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row col-12 d-flex">
+                    <div class="form-group col-5">
+                        <label asp-for="StateOfOrigin" class="col-form-label-sm ml-3"></label>
+                        <div class="col-sm-10">
+                            @Html.DropDownListFor(model => model.StateOfOrigin, Enum.GetValues(typeof(State)).Cast<State>().Select(e => new SelectListItem { Text = e.ToString(), Value = e.ToString() }), "Select an option", new{@class="form-select"})
+                            <span asp-validation-for="StateOfOrigin" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group col-5">
+                        <label asp-for="DateOfBirth" class="col-form-label-sm ml-3"></label>
+                        <div class="col-sm-10">
+                            <input asp-for="DateOfBirth" class="form-control" required />
+                            <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <hr />
+                <h5>Programme choice</h5>
+
+                <div class="form-group">
+                    <label asp-for="Programme1Id" class="col-form-label-sm ml-3"></label>
+                    <div class="col-sm-10">
+                        <select asp-for="Programme1Id" class="form-control" asp-items="ViewBag.Programme1Id"></select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Programme2Id" class="col-form-label-sm ml-3"></label>
+                    <div class="col-sm-10">
+                        <select asp-for="Programme2Id" class="form-control" asp-items="ViewBag.Programme2Id"></select>
+                    </div>
+                </div>
+                
+
+                <hr />
+                <h5>Guardian Information</h5>
+
+
+                <div class="form-group">
+                    <label asp-for="GuardName" class="col-form-label-sm ml-3"></label>
+                    <div class="col-sm-10">
+                        <input asp-for="GuardName" class="form-control" />
+                        <span asp-validation-for="GuardName" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="GuardPhone" class="col-form-label-sm ml-3"></label>
+                    <div class="col-sm-10">
+                        <input asp-for="GuardPhone" class="form-control" />
+                        <span asp-validation-for="GuardPhone" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="GuardEmail" class="col-form-label-sm ml-3"></label>
+                    <div class="col-sm-10">
+                        <input asp-for="GuardEmail" class="form-control" />
+                        <span asp-validation-for="GuardEmail" class="text-danger"></span>
+                    </div>
+                </div>
+                <br />
+
+                <button type="submit" class="btn btn-primary ml-3">Submit</button>
+                
+            </form>
+        </div>
+    </div>
+</div>
+@section Scripts {
+
+    @*<script>
+
+        $(document).ready(function () {
+
+
+            $('.custom-file-input').on("change", function () {
+
+                var fileName = $(this).val().split("\\").pop();
+
+                $(this).next('.custom-file-label').html(fileName);
+            });
+        });
+    </script>*@
+                }
+@*<br />
+<h4>Application Form</h4>
+<hr />
+<div class="page-wrapper p-t-100 p-b-50">
+	<div class="wrapper wrapper--w900">
+		<div class="card card-6">
+			<div class="card-body">
+				<form asp-action="Create" method="post" enctype="multipart/form-data">
+					<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+					<div class="form-group">
+						<label class="control-label">Surname</label>
+						<input asp-for="Surname" value="@ViewBag.Surname" class="form-control" readonly />
+					</div>
+
+					<div class="form-group">
+						<label class="control-label">First name</label>
+						<input asp-for="FirstName" value="@ViewBag.FirstName" readonly class="form-control" />
+					</div>
+					<div class="form-group">
+						<label class="control-label">Other name</label>
+						<input asp-for="OtherName" value="@ViewBag.OtherName" readonly class="form-control" />
+					</div>
+					<div class="form-group">
+						<label class="control-label">Email</label>
+						<input asp-for="Email" value="@ViewBag.Email" readonly class="form-control" />
+					</div>
+					<div class="form-group">
+						<label asp-for="Phone" class="control-label"></label>
+						<input asp-for="Phone" class="form-control" />
+						<span asp-validation-for="Phone" class="text-danger"></span>
+					</div>
+
+					<div class="form-group border-warning">
+						<label asp-for="Religion" class="control-label"></label>
+						<input asp-for="Religion" class="form-control" />
+						<span asp-validation-for="Religion" class="text-danger"></span>
+					</div>
+
+					<div class="form-group border-warning">
+						<label asp-for="PlaceOfBirth" class="control-label"></label>
+						<input asp-for="PlaceOfBirth" class="form-control" />
+						<span asp-validation-for="PlaceOfBirth" class="text-danger"></span>
+					</div>
+
+					<div class="form-group border-warning">
+						<label asp-for="MaritalStatus" class="control-label"></label>
+						<input asp-for="MaritalStatus" class="form-control" />
+						<span asp-validation-for="MaritalStatus" class="text-danger"></span>
+					</div>
+
+					<div class="form-group">
+						<label asp-for="PicturePath" class="col-form-label-sm ml-3"></label>
+						<div class="col-sm-10">
+							<div class="custom-file">
+								<input type="file" asp-for="PicturePath" class="form-control custom-file-input" />
+								<label class="custom-file-label">Click here to choose photo </label>
+							</div>
+						</div>
+					</div>
+
+					<div class="form-group border-warning">
+						<label asp-for="Address" class="control-label"></label>
+						<input asp-for="Address" class="form-control" />
+						<span asp-validation-for="Address" class="text-danger"></span>
+					</div>
+
+
+
+					<div class="form-group row col-12 d-flex">
+
+						<div class="form-group col-5">
+							<label asp-for="DateOfBirth" class="control-label"></label>
+							<input asp-for="DateOfBirth" class="form-control" />
+							<span asp-validation-for="DateOfBirth" class="text-danger"></span>
+						</div>
+
+						<div class="form-group col-5">
+							<label asp-for="Gender" class="control-label"></label>
+							@Html.DropDownListFor(model => model.Gender, Enum.GetValues(typeof(Gender)).Cast<Gender>().Select(e => new SelectListItem { Text = e.ToString(), Value = e.ToString() }), "Select an option", new{@class="form-select"})
+							<span asp-validation-for="Gender" class="text-danger"></span>
+						</div>
+
+					</div>
+					<div class="form-group row col-12 d-flex">
+						<div class="form-group col-5">
+							<label asp-for="StateOfOrigin" class="control-label"></label>
+							@Html.DropDownListFor(model => model.StateOfOrigin, Enum.GetValues(typeof(State)).Cast<State>().Select(e => new SelectListItem { Text = e.ToString(), Value = e.ToString() }), "Select an option", new{@class="form-select"})
+							<span asp-validation-for="StateOfOrigin" class="text-danger"></span>
+						</div>
+
+					</div>
+					<div class="form-group mt-3">
+						<label asp-for="GuardName" class="control-label"></label>
+						<input asp-for="GuardName" class="form-control" />
+						<span asp-validation-for="GuardName" class="text-danger"></span>
+					</div>
+					<div class="form-group">
+						<label asp-for="GuardEmail" class="control-label"></label>
+						<input asp-for="GuardEmail" class="form-control" />
+						<span asp-validation-for="GuardEmail" class="text-danger"></span>
+					</div>
+
+					<div class="form-group mb-3">
+						<label asp-for="GuardPhone" class="control-label"></label>
+						<input asp-for="GuardPhone" class="form-control" />
+						<span asp-validation-for="GuardPhone" class="text-danger"></span>
+					</div>
+					
+					<div class="form-group mt-3">
+						<label asp-for="Programme1Id" class="control-label"></label>
+						<select asp-for="Programme1Id" class="form-control" asp-items="ViewBag.Programme1Id"></select>
+					</div>
+					<div class="form-group mt-2">
+						<label asp-for="Programme2Id" class="control-label"></label>
+						<select asp-for="Programme2Id" class="form-control" asp-items="ViewBag.Programme2Id"></select>
+					</div>
+					<br />
+					<div class="form-group">
+						<input type="submit" value="Next &raquo;" class="btn btn-primary " />
+					</div>
+
+					@section Scripts {
+
+						<script>
+
+							$(document).ready(function () {
+
+
+								$('.custom-file-input').on("change", function () {
+
+									var fileName = $(this).val().split("\\").pop();
+
+									$(this).next('.custom-file-label').html(fileName);
+								});
+							});
+						</script>
+					}
+				</form>
+			</div>
+		</div>
+	</div>
+</div>*@
+
+
+

@@ -1,0 +1,179 @@
+﻿@*
+    
+*@
+@{
+}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsSHA/2.0.2/sha512.js"></script> <!-- Include jsSHA library -->
+
+<h4>Verify Payment</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+
+        <form>
+            <div class="form-group">
+                <label class="control-label">Transaction ID</label>
+                <input value="@ViewBag.TransactionID" type="text" id="TransactionID" class="form-control" />
+            </div>
+            
+        </form>
+        <button id="checkStatusBtn" class="btn btn-primary">Check Status</button>
+        <span id="spinnerDiv"></span>
+        <div id="statusMessage"></div>
+    </div>
+</div>
+
+<div id="resultDiv">
+
+</div>
+
+<div id="approveBtnDiv">
+
+</div>
+
+@section scripts{
+    <script type="text/javascript">
+            document.getElementById("checkStatusBtn").addEventListener("click", function () {
+            var transactionId = document.getElementById("TransactionID").value;
+            var html = `<div class="spinner-border spinner-border-sm ms-auto" role="status" aria-hidden="true"></div>`;
+            var spinnerDivContainer = document.getElementById("spinnerDiv");
+            spinnerDivContainer.innerHTML = html;
+
+            var statusMessageContainer = document.getElementById("statusMessage");
+
+            // Test Key
+            //var secretKey = "23093b2bda801eece94fc6e8363c05fad90a4ba3e12045005141b0bab41704b3a148904529239afd1c9a3880d51b4018d13fd626b2cef77a6f858fe854834e54";
+            // Live Key
+            var secretKey = "6dfd5a053294a17e6b60976dbf1c5060b5b0a2fdd76031ea0bca5d9cb7237a64425d350117ca6d9e82d27db857c4d7bc24ed28b6cba6a7d3e24affae0e279dbf";
+
+            var shaObj = new jsSHA("SHA-512", "TEXT"); // Create SHA-512 object
+            shaObj.update(transactionId + secretKey); // Concatenate and hash the transaction ID with secret key
+            var hashValue = shaObj.getHash("HEX"); // Get the hash value in hexadecimal format
+            var settings = {
+                // Test URL
+                //"url": "https://remitademo.net/payment/v1/payment/query/" + transactionId,
+                // Live URL
+                "url": "https://login.remita.net/payment/v1/payment/query/" + transactionId,
+                "method": "GET",
+                "timeout": 0,
+                "headers": {
+                    // Test Key
+                    //"publicKey": "QzAwMDAyNzEyNTl8MTEwNjE4NjF8OWZjOWYwNmMyZDk3MDRhYWM3YThiOThlNTNjZTE3ZjYxOTY5NDdmZWE1YzU3NDc0ZjE2ZDZjNTg1YWYxNWY3NWM4ZjMzNzZhNjNhZWZlOWQwNmJhNTFkMjIxYTRiMjYzZDkzNGQ3NTUxNDIxYWNlOGY4ZWEyODY3ZjlhNGUwYTY=",
+                    // Live Key
+                    "publicKey": "RVV8MTAxMTU0MjYzODZ8YmE2NmZiMGM5MmExNTY0N2ExYTg0YjA2MGI3N2Q1ZDU4YjNiYTlmMDViZGFmOTQ5NDVmNzgwOGM0MTRhMzgyYjA2ZDU0MTlkNDYyODg0Y2MzZTVhOGQ2ZWYzYmRjNTgwMmQxNzkxMWYzZTk5MzhlNDhmMTcyMzdiMjIxNjU3NGY=",
+                    "Content-Type": "application/json",
+                    "TXN_HASH": hashValue
+                },
+            };
+
+            $.ajax(settings)
+                .done(function (response) {
+                    console.log(response);
+                        spinnerDivContainer.innerHTML = "";
+                    paymentReference = response.responseData[0].paymentReference;
+                    paymentDate = response.responseData[0].paymentDate;
+                    amount = response.responseData[0].amount;
+                    paymentState = response.responseData[0].paymentState;
+                    processorId = response.responseData[0].processorId;
+                    trId = response.responseData[0].transactionId;
+                    debitedAmount = response.responseData[0].debitedAmount;
+                    customerId = response.responseData[0].customerId;
+                    message = response.responseData[0].message;
+                    paymentChannel = response.responseData[0].paymentChannel;
+                    name = response.responseData[0].firstName + " " + response.responseData[0].lastName;
+                    var html = `<br />
+                    <table>
+                        <tr>
+                            <th>Key</th>
+                            <th>Value</th>
+                        </tr>
+                        <tr>
+                            <td>Transaction ID:</td>
+                            <td>${trId}</td>
+                        </tr><tr>
+                            <td>Payment reference:</td>
+                            <td>${paymentReference}</td>
+                        </tr>
+                        <tr>
+                            <td>Email:</td>
+                            <td>${customerId}</td>
+                        </tr>
+                        <tr>
+                            <td>Name:</td>
+                            <td>${name}</td>
+                        </tr>
+                        <tr>
+                            <td>Date:</td>
+                            <td>${paymentDate}</td>
+                        </tr>
+                        <tr>
+                            <td>Amount:</td>
+                            <td>${amount}</td>
+                        </tr>
+                        <tr>
+                            <td>Debited Amount:</td>
+                            <td>${debitedAmount}</td>
+                        </tr>
+                        <tr>
+                            <td>Payment Channel:</td>
+                            <td>${paymentChannel}</td>
+                        </tr>
+                        <tr>
+                            <td>Processor ID:</td>
+                            <td>${processorId}</td>
+                        </tr>
+                        <tr>
+                            <td>Status:</td>
+                            <td><b>${paymentState}</b></td>
+                        </tr>
+                        <tr>
+                            <td>Message:</td>
+                            <td>${message}</td>
+                        </tr>
+                    </table>`;
+                    $("#resultDiv").html(html);
+                    
+                    html = `<button class="btn btn-primary btn-sm" onclick="approvePayment('${transactionId}', '${paymentReference}', '${paymentDate}', '${amount}', '${paymentState}')">Approve</button>`;
+
+                    if(paymentState == "SUCCESSFUL"){
+                        $("#approveBtnDiv").html(html);
+                    }
+                                        
+                });
+        });
+
+        function approvePayment(transactionId, paymentReference, paymentDate, amount, paymentState) {
+            var statusMessageContainer = document.getElementById("statusMessage");
+            $.ajax({
+                    url: '/Admin/VerifyPayment',
+                    type: 'POST',
+                data: { transactionId: transactionId, paymentReference: paymentReference, paymentDate: paymentDate, amount: amount, paymentState: paymentState },
+                    success: function (data) {
+                        console.log('Payment approved', data);
+                        html = `<div class="alert alert-success alert-dismissible fade show" role="alert">
+                                            Payment approved.
+                                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                            </div>`;
+                        statusMessageContainer.innerHTML = html;
+                    },
+                    error: function (error) {
+                        console.log('Error saving payment to database', error);
+                        html = `<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    An error occurred.
+                                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>`;
+                        statusMessageContainer.innerHTML = html;
+                    }
+                })
+                .fail(function (jqXHR, textStatus, errorThrown) {
+                        console.error("AJAX request failed:", textStatus, errorThrown);
+                        html = `<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                                    An error occurred.
+                                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>`;
+                        statusMessageContainer.innerHTML = html;
+                    });
+        }
+    </script>
+}

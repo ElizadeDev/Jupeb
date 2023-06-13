@@ -1,0 +1,80 @@
+﻿@model List<JupebPortal.ViewModels.PaymentsViewModel>
+
+@{
+    ViewData["Title"] = "Payments";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2 class="text-primary">Payments</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table table-responsive">
+    <thead>
+        <tr>
+            <th>
+                Email
+            </th>
+            <th>
+                Name
+            </th>
+            <th>
+                RRR
+            </th>
+            <th>
+               Transaction ID
+            </th>
+            <th>
+                Amount
+            </th>
+            <th>
+                Purpose
+            </th>
+            
+            <th>
+                Date
+            </th>
+            <th></th>
+            @*<th></th>*@
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                    @Html.DisplayFor(modelItem => item.UserEmail)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.UserName)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.Payment.PaymentRef)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.Payment.TransactionID)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.Payment.Amount)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.Payment.Purpose)
+            </td>
+            
+            <td>
+                    @Html.DisplayFor(modelItem => item.Payment.PaymentDate)
+            </td>
+            @if (item.Payment.IsSuccess == false)
+                {
+                    <td><a id="@item.Payment.TransactionID" class="btn btn-primary btn-sm" role="button" asp-controller="Admin" asp-action="VerifyPayment" asp-route-transactionId="@item.Payment.TransactionID">Check</a></td>
+                }
+                
+            @*<td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>*@
+        </tr>
+}
+    </tbody>
+</table>
