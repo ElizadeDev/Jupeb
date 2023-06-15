@@ -1,0 +1,35 @@
+﻿@model JupebPortal.Models.Subject
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<form method="post" asp-controller="Subject" asp-action="Update">
+    <input asp-for="id" hidden />
+    <div class="row pb-2 md-3 mt-5">
+        <h2 class="text-primary">Edit O Level Subject </h2>
+        <hr />
+    </div>
+    <div class="col-sm-6">
+        <label> Set New Subject and Click Update</label>
+        <p></p>
+        <input asp-for="Name" class="form-control" />
+
+    </div>
+    <br />
+    <br />
+
+    <button type="submit" class="btn btn-primary" style="width:150px">Update</button>
+    <a asp-controller="Subject" asp-action="Index" class="btn btn-secondary" style="width:150px">Back to List</a>
+
+
+</form>
+
+
+
+
+
+
+
+
+

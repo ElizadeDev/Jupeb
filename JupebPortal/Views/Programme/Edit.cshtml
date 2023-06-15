@@ -1,0 +1,46 @@
+﻿@model JupebPortal.Models.Programme
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<form method="post" asp-action="Update">
+    <input asp-for="id" hidden />
+    <div class="row pb-2 md-3 mt-5">
+        <h2 class="text-primary">Edit Programme</h2>
+        <hr />
+    </div>
+    <div class="col-sm-6">
+        <label> Set New Programme and Click Update</label>
+        
+        <input asp-for="Name" class="form-control" />
+
+    </div>
+    <br />
+
+    @*<div class="col-sm-6">
+        <label> Tuition Fee</label>
+        <input asp-for="Tuition" class="form-control" />
+
+    </div>
+    <div class="col-sm-6">
+        <label asp-for="Duration" class="control-label"></label>
+        <input asp-for="Duration" class="form-control" />
+    </div>*@
+    <br />
+    <br />
+
+    <button type="submit" class="btn btn-primary" style="width:150px">Update</button>
+    <a asp-controller="Program" asp-action="Index" class="btn btn-secondary" style="width:150px">Back to List</a>
+
+
+</form>
+
+
+
+
+
+
+
+
+

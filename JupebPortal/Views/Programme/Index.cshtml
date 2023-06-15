@@ -1,0 +1,77 @@
+﻿@model IEnumerable<JupebPortal.Models.Programme>
+@{
+    ViewData["Title"] = "Index";
+}
+
+    <div class="row pt-4">
+        <div class="col-6">
+            <h2 class="text-primary">Programme List</h2>
+        </div>
+        <div class="col-6 text-end">
+            <a asp-action="Add" class="btn btn-primary"><i class="bi bi-plus-circle-fill"></i> &nbsp; Add New Programme</a>
+        </div>
+    </div>
+
+
+<table class="table table-bordered table-striped table-responsive" style="width:100%" id="myTable">
+    
+    <thead>
+        <tr>
+            <th>
+                Programme Name
+            </th>
+
+            @*<th>
+                Tuition
+            </th>
+
+            <th>
+                Duration
+            </th>*@
+            
+            <th>
+                Actions
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var obj in Model)
+        {
+            <tr>
+                <td width="50%">
+                    @obj.Name
+                </td>
+                @*<td width="30%">
+                    @obj.Tuition
+                </td>
+                <td width="30%">
+                    @obj.Duration
+                </td>*@
+                <td>
+                    <div class="w-70 btn-group" role="group">
+                        <a asp-controller="Programme" asp-action="Edit" asp-route-id="@obj.id"
+                           class="btn btn-secondary mx-2"><i class="bi-pencil-square"></i> Edit</a>
+                        <a asp-controller="Programme" asp-action="Delete" asp-route-id="@obj.id"
+                           class="btn btn-danger mx-2"><i class="bi bi-trash3"></i>Delete</a>
+                    </div>
+
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section scripts{
+    <script type="text/javascript">
+            $(document).ready( function () {
+        $('#myTable').DataTable(
+            {
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ]
+        });
+    } ); 
+    
+    </script>
+}

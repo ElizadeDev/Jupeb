@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace JupebPortal.ViewModel
+namespace JupebPortal.ViewModels
 {
     public class AssignRoleViewModel
     {
