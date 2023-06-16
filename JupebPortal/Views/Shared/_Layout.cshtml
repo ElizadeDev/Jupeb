@@ -29,19 +29,23 @@
 <body>
 
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-light border-bottom box-shadow mb-3">
+            <div class="container-fluid">
                 <a class="navbar-brand" href="/">
                     <img src="~/images/elizade.png" width="50" height="50" asp-append-version="true" />
                     @*@_configuration["AppName"]*@
                 </a>
-
+                
+                
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1"><li></li></ul>
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item"><a class="nav-link" href="/Home">Home</a></li>
+                        <li class="nav-item"><a class="nav-link" href="http://www.elizadeuniversity.edu.ng" target="_blank">Website</a></li>
+                    </ul>
                     <partial name="_LoginPartial" />
 
                 </div>
@@ -79,7 +83,7 @@
 
                             </ul>
                         }
-                        @if (User.IsInRole("admin"))
+                        @if (User.IsInRole("Admin"))
                         {
                             <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="true" class="dropdown-toggle">ADMIN</a>
                             <ul class="collapse show list-unstyled" id="pageSubmenu">
@@ -106,7 +110,7 @@
                             </ul>
                         }
 
-                        @if (User.IsInRole("admission officer"))
+                        @if (User.IsInRole("Admission officer"))
                         {
                             <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="true" class="dropdown-toggle">ADMISSION OFFICER</a>
                             <ul class="collapse show list-unstyled" id="pageSubmenu">
@@ -125,7 +129,7 @@
                             </ul>
                         }
 
-                        @if (User.IsInRole("bursary officer"))
+                        @if (User.IsInRole("Bursary officer"))
                         {
                             <a href="#bursarySubmenu" data-toggle="collapse" aria-expanded="true" class="dropdown-toggle">BURSARY MENU</a>
                             <ul class="collapse show list-unstyled" id="bursarySubmenu">
@@ -139,7 +143,7 @@
 
                         <ul class="list-unstyled components mb-2">
                             <li>
-                                <form class="form-inline" asp-area="Identity" asp-page="/Account/Manage/ChangePassword" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                                <form method="get" class="form-inline" asp-area="Identity" asp-page="/Account/Manage/ChangePassword" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
                                     <span class="fa fa-user mr-3"></span><button type="submit" class="link btn text-light">Manage Account</button>
                                 </form>
 

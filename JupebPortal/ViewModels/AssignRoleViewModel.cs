@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using JupebPortal.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace JupebPortal.ViewModels
 {
@@ -6,7 +7,7 @@ namespace JupebPortal.ViewModels
     {
         public string UserId { get; set; }
         public string RoleId { get; set; }
-        public IEnumerable<IdentityUser> Users { get; set; }
+        public IEnumerable<ApplicationUser> Users { get; set; }
         public IEnumerable<IdentityRole> Roles { get; set; }
     }
 }

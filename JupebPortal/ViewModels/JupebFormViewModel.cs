@@ -11,7 +11,7 @@ namespace JupebPortal.ViewModels
     {
         public string UserId { get; set; }
         [ForeignKey("UserId")]
-        public IdentityUser User { get; set; }
+        public ApplicationUser User { get; set; }
         public string Surname { get; set; }
         [Required]
         [DisplayName("First Name")]
