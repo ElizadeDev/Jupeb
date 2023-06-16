@@ -73,17 +73,6 @@ namespace JupebPortal.Repository.AppServices
             //var Isauthenticated = await SendMail.AuthenticateSenderDomain("admin@projectdriveng.com.ng", "nimda9876@Elo");
             var Isauthenticated = await SendMail.AuthenticateSenderDomain("info.admission@elizadeuniversity.edu.ng", "xkqchlmyfhppchsf");
 
-            //USING TEMPLATE
-            //var res = await SendMail.SendSingleEmailAsync(new PD.EmailSender.Helpers.Model.MessageModel
-            //{
-            //    Subject = userEmailOptions.Subject,
-            //    EmailAddresses = userEmailOptions.ToEmails.ToArray(),
-            //    Message = userEmailOptions.Body
-
-            //}, Isauthenticated.Settings,"templateone");
-            //return res;
-
-            // WITHOUT USING DEFAULT TEMPLATE
             var res = SendMail.SendSingleEmail(new PD.EmailSender.Helpers.Model.MessageModel
             {
                 Subject = userEmailOptions.Subject,
