@@ -2,7 +2,114 @@
 @model RegisterModel
 @{
     ViewData["Title"] = "Register";
+    Layout = null;
 }
+
+
+
+
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Register</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link href="~/logintemplate/css/style.css" rel="stylesheet" />
+
+</head>
+<body>
+    <section class="ftco-section">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-6 col-lg-5">
+                    <div class="login-wrap p-4 p-md-5">
+                        <div class="icon d-flex align-items-center justify-content-center">
+                            <img class="img" src="~/images/elizade.png" />
+                        </div>
+                        <h3 class="text-center mb-4">Create an Account</h3>
+                        <hr />
+                        <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="login-form">
+                            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+                            <div class="form-group">
+                                <input asp-for="Input.Surname" type="text" class="form-control rounded-left" placeholder="Surname" required />
+                                <span asp-validation-for="Input.Surname" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <input asp-for="Input.FirstName" type="text" class="form-control rounded-left" placeholder="FirstName" required />
+                                <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+                            </div>
+                             <div class="form-group">
+                                <input asp-for="Input.OtherName" type="text" class="form-control rounded-left" placeholder="OtherName" required />
+                                <span asp-validation-for="Input.OtherName" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <input asp-for="Input.Email" type="text" class="form-control rounded-left" placeholder="Email" required />
+                                <span asp-validation-for="Input.Email" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <input asp-for="Input.PhoneNumber" type="text" class="form-control rounded-left" placeholder="PhoneNumber" required />
+                                <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+                            </div>
+                            <div class="form-group ">
+                                <input asp-for="Input.Password" type="Password" class="form-control rounded-left" placeholder="Password" required />
+                                <span asp-validation-for="Input.Password" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <input asp-for="Input.ConfirmPassword" type="Password" class="form-control rounded-left" placeholder="ConfirmPassword" required />
+                                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                            </div>
+                            <hr />
+                            <div class="form-group">
+                                Already Have an Account?
+                                <a class="txt2" asp-area="Identity" asp-page="/Account/Login"><b>Login</b></a>
+
+                                
+                            </div>
+                           
+                            <div class="form-group">
+                                <button id="registerSubmit" type="submit" class="btn btn-primary rounded submit p-3 px-5"><span class="text-warning"><strong>Register</strong></span></button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="js/jquery.min.js"></script>
+    <script src="js/popper.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/main.js"></script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@*
+
 
 <h1>@ViewData["Title"]</h1>
 
@@ -52,7 +159,7 @@
     </div>
     
 </div>
-
+*@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
