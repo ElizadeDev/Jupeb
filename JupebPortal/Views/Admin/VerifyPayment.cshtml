@@ -1,6 +1,5 @@
-﻿@*
-    
-*@
+﻿@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+
 @{
 }
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -31,7 +30,11 @@
 <div id="approveBtnDiv">
 
 </div>
-
+@{
+    string publicKey = Configuration.GetSection("Remita:PublicKey").Value;
+    string secretKey = Configuration.GetSection("Remita:SecretKey").Value;
+    string remitaUrl = Configuration.GetSection("Remita:BaseStatusUrl").Value;
+}
 @section scripts{
     <script type="text/javascript">
             document.getElementById("checkStatusBtn").addEventListener("click", function () {
@@ -41,27 +44,18 @@
             spinnerDivContainer.innerHTML = html;
 
             var statusMessageContainer = document.getElementById("statusMessage");
-
-            // Test Key
-            //var secretKey = "23093b2bda801eece94fc6e8363c05fad90a4ba3e12045005141b0bab41704b3a148904529239afd1c9a3880d51b4018d13fd626b2cef77a6f858fe854834e54";
-            // Live Key
-            var secretKey = "6dfd5a053294a17e6b60976dbf1c5060b5b0a2fdd76031ea0bca5d9cb7237a64425d350117ca6d9e82d27db857c4d7bc24ed28b6cba6a7d3e24affae0e279dbf";
+            
+            var secretKey = "@secretKey";
 
             var shaObj = new jsSHA("SHA-512", "TEXT"); // Create SHA-512 object
             shaObj.update(transactionId + secretKey); // Concatenate and hash the transaction ID with secret key
             var hashValue = shaObj.getHash("HEX"); // Get the hash value in hexadecimal format
             var settings = {
-                // Test URL
-                //"url": "https://remitademo.net/payment/v1/payment/query/" + transactionId,
-                // Live URL
-                "url": "https://login.remita.net/payment/v1/payment/query/" + transactionId,
+                "url": "@remitaUrl" + transactionId,
                 "method": "GET",
                 "timeout": 0,
                 "headers": {
-                    // Test Key
-                    //"publicKey": "QzAwMDAyNzEyNTl8MTEwNjE4NjF8OWZjOWYwNmMyZDk3MDRhYWM3YThiOThlNTNjZTE3ZjYxOTY5NDdmZWE1YzU3NDc0ZjE2ZDZjNTg1YWYxNWY3NWM4ZjMzNzZhNjNhZWZlOWQwNmJhNTFkMjIxYTRiMjYzZDkzNGQ3NTUxNDIxYWNlOGY4ZWEyODY3ZjlhNGUwYTY=",
-                    // Live Key
-                    "publicKey": "RVV8MTAxMTU0MjYzODZ8YmE2NmZiMGM5MmExNTY0N2ExYTg0YjA2MGI3N2Q1ZDU4YjNiYTlmMDViZGFmOTQ5NDVmNzgwOGM0MTRhMzgyYjA2ZDU0MTlkNDYyODg0Y2MzZTVhOGQ2ZWYzYmRjNTgwMmQxNzkxMWYzZTk5MzhlNDhmMTcyMzdiMjIxNjU3NGY=",
+                    "publicKey": "@publicKey",
                     "Content-Type": "application/json",
                     "TXN_HASH": hashValue
                 },

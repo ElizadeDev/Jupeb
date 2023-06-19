@@ -1,104 +1,73 @@
 ﻿@model JupebPortal.Models.Payment
 @inject Microsoft.Extensions.Configuration.IConfiguration Configuration;
-@{
-    bool useLiveRemita = false;
-
-    string publicKey = Configuration.GetSection("RemitaDemo:PublicKey").Value;
-
-    if (useLiveRemita == true)
-    {
-        publicKey = Configuration.GetSection("RemitaLive:PublicKey").Value;
-        <!-- Live script-->
-        <script type="text/javascript" src="https://login.remita.net/payment/v1/remita-pay-inline.bundle.js"></script>
-    }
-    else
-    {
-        <!-- Test script-->
-        <script type="text/javascript" src="https://remitademo.net/payment/v1/remita-pay-inline.bundle.js"></script>
-    }
 
     
-}
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <title>Remita</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    @*<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/js/bootstrap.bundle.min.js"></script>*@
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-    <style type="text/css">
-        .button {
+<style type="text/css">
+    .button {
             
-            border: none;
-            color: white;
-            padding: 15px 32px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            margin: 4px 2px;
-            cursor: pointer;
-            border-radius: 4px;
-        }
+        border: none;
+        color: white;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;
+        border-radius: 4px;
+    }
 
-        input {
-            max-width: 30%;
-        }
-    </style>
-</head>
-<body>
+    input {
+        max-width: 30%;
+    }
+</style>
+
 <br />
-
     <h4>Payment Details</h4>
 <hr />
 
 
-    <div class="container mt-3">
+<div class="container mt-3">
         
-        <form onsubmit="makePayment()" id="payment-form">
-            <div class="form-floating mt-3 mb-3">
-                <input type="text" class="form-control" id="js-transactionId" name="transactionId" value=""  hidden>
-                <label for="pwd">Transaction Id</label>
-            </div>
-            <div class="form-floating mb-3 mt-3">
-                    <input type="text" class="form-control" id="js-firstName" placeholder="Enter First Name" name="firstName" value="@ViewBag.FirstName" readonly>
-                <label for="email">First Name</label>
-            </div>
-            <div class="form-floating mb-3 mt-3">
-                    <input type="text" class="form-control" id="js-lastName" placeholder="Enter Last Name" name="lastName" value="@ViewBag.LastName" readonly>
-                <label for="email">Last Name</label>
-            </div>
-            <div class="form-floating mb-3 mt-3">
-                    <input type="text" class="form-control" id="js-email" placeholder="Enter Email" name="email" value="@ViewBag.Email" readonly>
-                <label for="email">Email</label>
-            </div>
-            <div class="form-floating mt-3 mb-3">
-                    <input type="text" class="form-control" id="js-narration" placeholder="Enter Narration" name="narration" value="@ViewBag.Purpose" readonly>
-                <label for="pwd">Narration</label>
-            </div>
-            <div class="form-floating mt-3 mb-3">
-                <input type="text" class="form-control" id="js-amount" placeholder="Enter Amount" name="amount" value="@ViewBag.Amount" readonly>
-                <label for="pwd">Amount</label>
-            </div>
+    <form onsubmit="makePayment()" id="payment-form">
+        <div class="form-floating mt-3 mb-3">
+            <input type="text" class="form-control" id="js-transactionId" name="transactionId" value=""  hidden>
+            <label for="pwd">Transaction Id</label>
+        </div>
+        <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" id="js-firstName" placeholder="Enter First Name" name="firstName" value="@ViewBag.FirstName" readonly>
+            <label for="email">First Name</label>
+        </div>
+        <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" id="js-lastName" placeholder="Enter Last Name" name="lastName" value="@ViewBag.LastName" readonly>
+            <label for="email">Last Name</label>
+        </div>
+        <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" id="js-email" placeholder="Enter Email" name="email" value="@ViewBag.Email" readonly>
+            <label for="email">Email</label>
+        </div>
+        <div class="form-floating mt-3 mb-3">
+                <input type="text" class="form-control" id="js-narration" placeholder="Enter Narration" name="narration" value="@ViewBag.Purpose" readonly>
+            <label for="pwd">Narration</label>
+        </div>
+        <div class="form-floating mt-3 mb-3">
+            <input type="text" class="form-control" id="js-amount" placeholder="Enter Amount" name="amount" value="@ViewBag.Amount" readonly>
+            <label for="pwd">Amount</label>
+        </div>
             
-            <p class="text-sm-start text-info">Note that payment attracts transaction charges.</p>
-            <input type="button" onclick="makePayment()" value="Submit" button class="button btn btn-primary shadow-sm" />
+        <p class="text-sm-start text-info">Note that payment attracts transaction charges.</p>
+        <input type="button" onclick="makePayment()" value="Submit" button class="button btn btn-primary shadow-sm" />
 
-        </form>
-        <br />
-        <br />
-    </div>
-    
-</body>
-</html>
-
-
-
-
+    </form>
+        
+    <br />
+    <br />
+</div>
+@{
+    string publicKey = Configuration.GetSection("Remita:PublicKey").Value;
+    string remitaScript = Configuration.GetSection("Remita:BasePayUrl").Value;
+}
+<script type="text/javascript" src="@remitaScript"></script>
 <script>
     function makePayment() {
         var form = document.querySelector("#payment-form");
@@ -115,13 +84,13 @@
             }
         });
     }
-
-    function makeRequest(form){
+        
+    function makeRequest(form) {
 
         var paymentEngine = RmPaymentEngine.init({
-            
+
             key: "@publicKey",
-            transactionId: form.querySelector('input[name="transactionId"]').value, //Math.floor(Math.random() * 1101233)
+            transactionId: form.querySelector('input[name="transactionId"]').value,
             channel: "CARD,USSD,QR,PAYWITHREMITA,PHONENUMBER,WALLET,ENAIRA,BANK,IBANK",
             customerId: form.querySelector('input[name="email"]').value,
             firstName: form.querySelector('input[name="firstName"]').value,
@@ -146,7 +115,7 @@
             },
             onError: function (response) {
                 console.log('callback Error Response', response);
-                
+
             },
             onClose: function () {
                 console.log("closed");
@@ -155,8 +124,8 @@
         paymentEngine.showPaymentWidget();
     }
 
-    window.onload = function () {
-        setDemoData();
-    };
-
+    
 </script>
+
+
+

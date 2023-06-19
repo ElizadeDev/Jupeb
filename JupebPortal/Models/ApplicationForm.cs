@@ -36,9 +36,8 @@ namespace JupebPortal.Models
         [Required]
         [DisplayName("Marital Status")]
         public string MaritalStatus { get; set; }
-        [Required]
         [DisplayName("Picture")]
-        public string PicturePath { get; set; }
+        public string? PicturePath { get; set; }
         [Required]
 		public string Address { get; set; }
         [Required]

@@ -89,6 +89,7 @@ namespace JupebPortal.Controllers
         public async Task<IActionResult> NewApplicantIndex(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
+            ViewBag.existingTransactions = await _context.Payments.Where(p => p.UserId == user.Id).ToListAsync();
             return View(user);
         }
         public IActionResult ApplicationSuccess(string id)

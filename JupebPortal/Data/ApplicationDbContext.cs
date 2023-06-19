@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection.Emit;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace JupebPortal.Data;
 
@@ -26,6 +27,11 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
             .WithMany()
             .HasForeignKey(a => a.Programme2Id)
             .OnDelete(DeleteBehavior.NoAction);
+
+        builder.Entity<ApplicationUser>()
+        .HasOne(u => u.ApplicationForm)
+        .WithOne(p => p.User)
+        .HasForeignKey<ApplicationForm>(p => p.UserId);
 
         base.OnModelCreating(builder);
         // Customize the ASP.NET Identity model and override the defaults if needed.
