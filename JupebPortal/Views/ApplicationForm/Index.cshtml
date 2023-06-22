@@ -56,6 +56,9 @@
             <th>
                 O Level Subjects
             </th>
+            <th>
+                Application Date
+            </th>
             
         </tr>
     </thead>
@@ -106,7 +109,9 @@
                         }
                     </ol>
                 </td>
- 
+                <td width="30%">
+                    @Html.DisplayFor(modelItem => item.CreatedAt)
+                </td>
             </tr>
         }
     </tbody>

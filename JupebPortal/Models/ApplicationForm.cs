@@ -67,6 +67,9 @@ namespace JupebPortal.Models
 		
 		public bool isSubmitted { get; set; } = false;
 
+		public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+		public DateTime ModifiedAt { get; set; } = DateTime.UtcNow;
 
 		// Navigation properties for the foreign keys
 		public Programme? Programme1 { get; set; }

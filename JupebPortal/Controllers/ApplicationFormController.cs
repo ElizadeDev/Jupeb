@@ -162,6 +162,7 @@ namespace JupebPortal.Controllers
                     userForm.PlaceOfBirth = model.PlaceOfBirth;
                     userForm.Religion = model.Religion;
                     userForm.StateOfOrigin = model.StateOfOrigin;
+                    userForm.ModifiedAt = DateTime.UtcNow;
                    
                     userForm.Programme1Id = model.Programme1Id;
                     userForm.Programme2Id = model.Programme2Id;
@@ -301,6 +302,7 @@ namespace JupebPortal.Controllers
 
             //TODO set isSubmitted to true here
             applicationForm.isSubmitted = true;
+            applicationForm.ModifiedAt = DateTime.UtcNow;
             await _context.SaveChangesAsync();
 
             //Send Registration Sucessfull Email
