@@ -14,7 +14,7 @@ namespace JupebPortal.Models
 		[Required]
 		public string UserId { get; set; }
 		[ForeignKey("UserId")]
-		public IdentityUser User { get; set; }
+		public ApplicationUser User { get; set; }
 		public string Surname { get; set; }
 		[Required]
 		[DisplayName("First Name")]
@@ -36,9 +36,8 @@ namespace JupebPortal.Models
         [Required]
         [DisplayName("Marital Status")]
         public string MaritalStatus { get; set; }
-        [Required]
         [DisplayName("Picture")]
-        public string PicturePath { get; set; }
+        public string? PicturePath { get; set; }
         [Required]
 		public string Address { get; set; }
         [Required]
@@ -68,6 +67,9 @@ namespace JupebPortal.Models
 		
 		public bool isSubmitted { get; set; } = false;
 
+		public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+		public DateTime ModifiedAt { get; set; } = DateTime.UtcNow;
 
 		// Navigation properties for the foreign keys
 		public Programme? Programme1 { get; set; }

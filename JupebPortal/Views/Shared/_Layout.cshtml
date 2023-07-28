@@ -1,4 +1,6 @@
-﻿
+﻿@using Microsoft.AspNetCore.Identity;
+
+@inject UserManager<ApplicationUser> UserManager
 
 <!DOCTYPE html>
 <html lang="en">
@@ -29,19 +31,43 @@
 <body>
 
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-light border-bottom box-shadow mb-3">
+            <div class="container-fluid">
                 <a class="navbar-brand" href="/">
                     <img src="~/images/elizade.png" width="50" height="50" asp-append-version="true" />
                     @*@_configuration["AppName"]*@
                 </a>
-
+                
+                
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1"><li></li></ul>
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item"><a class="nav-link" href="/Home">Home</a></li>
+                        <li class="nav-item"><a class="nav-link" href="http://www.elizadeuniversity.edu.ng" target="_blank">Website</a></li>
+                    </ul>
+                    @{
+                        var picPath = (await UserManager.GetUserAsync(User))?.ApplicationForm?.PicturePath;
+                    }
+
+                    <div class="nav-item">
+                    @if(picPath != null)
+                    {
+                            <img src="~/ApplicantPhotos/@picPath"
+                             class="rounded-circle"
+                             height="30"
+                             width="30"
+                             alt=""
+                            loading="lazy" />
+                        }
+                        else
+                        {
+                            <i class="bi bi-person-circle"></i>
+                        }
+
+                    </div>
                     <partial name="_LoginPartial" />
 
                 </div>
@@ -68,10 +94,9 @@
                         @if (User.IsInRole("applicant"))
                         {
                             <ul class="list-unstyled components mb-2">
-                                <li class="active">
-
+                                @*<li class="active">
                                     <a href="https://euconnect.com.ng/application-form-2023-2024/"><span class="fa fa-home mr-3"></span> Complete Bio-Data Form</a>
-                                </li>
+                                </li>*@
                                 @* <li>
                             <a href="#"><span class="fa fa-user mr-3"></span> Payments</a>
                             </li>*@
@@ -79,12 +104,12 @@
 
                             </ul>
                         }
-                        @if (User.IsInRole("admin"))
+                        @if (User.IsInRole("Admin"))
                         {
                             <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="true" class="dropdown-toggle">ADMIN</a>
                             <ul class="collapse show list-unstyled" id="pageSubmenu">
                                 <li>
-                                    <a asp-area="" asp-controller="Program" asp-action="Index">Programmes</a>
+                                    <a asp-area="" asp-controller="Programme" asp-action="Index">Programmes</a>
                                 </li>
                                 <li>
                                     <a asp-area="" asp-controller="Subject" asp-action="Index">OLevel Subjects</a>
@@ -99,14 +124,14 @@
                                 <li>
                                     <a asp-area="" asp-controller="Payments" asp-action="Index">Payments</a>
                                 </li>
-                                <li>
+                               @* <li>
                                     <a asp-area="" asp-controller="AdmittedStudents" asp-action="Index">Grant Admission</a>
-                                </li>
+                                </li>*@
 
                             </ul>
                         }
 
-                        @if (User.IsInRole("admission officer"))
+                        @if (User.IsInRole("Admission officer"))
                         {
                             <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="true" class="dropdown-toggle">ADMISSION OFFICER</a>
                             <ul class="collapse show list-unstyled" id="pageSubmenu">
@@ -115,9 +140,9 @@
                                     <a asp-area="" asp-controller="ApplicationForm" asp-action="Index">Applicants</a>
                                 </li>
 
-                                <li>
+                                @*<li>
                                     <a asp-area="" asp-controller="AdmittedStudents" asp-action="Index">Grant Admission</a>
-                                </li>
+                                </li>*@
                                 <li>
                                     <a asp-area="" asp-controller="Payments" asp-action="GetSuccessfulPayments">Payments</a>
                                 </li>
@@ -125,7 +150,7 @@
                             </ul>
                         }
 
-                        @if (User.IsInRole("bursary officer"))
+                        @if (User.IsInRole("Bursary officer"))
                         {
                             <a href="#bursarySubmenu" data-toggle="collapse" aria-expanded="true" class="dropdown-toggle">BURSARY MENU</a>
                             <ul class="collapse show list-unstyled" id="bursarySubmenu">
@@ -139,7 +164,7 @@
 
                         <ul class="list-unstyled components mb-2">
                             <li>
-                                <form class="form-inline" asp-area="Identity" asp-page="/Account/Manage/ChangePassword" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                                <form method="get" class="form-inline" asp-area="Identity" asp-page="/Account/Manage/ChangePassword" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
                                     <span class="fa fa-user mr-3"></span><button type="submit" class="link btn text-light">Manage Account</button>
                                 </form>
 
@@ -171,7 +196,7 @@
 
         <footer class=" footer text-muted text-center">
             <div class="container">
-                &copy; Admission Portal - @DateTime.Now.Year
+                &copy; Elizade University - @DateTime.Now.Year
             </div>
         </footer>
     </div>

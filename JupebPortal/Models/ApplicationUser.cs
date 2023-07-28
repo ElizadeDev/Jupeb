@@ -13,5 +13,6 @@ namespace JupebPortal.Models
         public string FirstName { get; set; }
         [DisplayName("Other Name")]
         public string OtherName { get; set; }
+        public ApplicationForm? ApplicationForm { get; set; }
     }
 }

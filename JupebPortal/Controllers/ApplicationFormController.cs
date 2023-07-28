@@ -137,7 +137,8 @@ namespace JupebPortal.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> Created(JupebFormViewModel model)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(JupebFormViewModel model)
         {
             var user = await _userManager.GetUserAsync(User);
 
@@ -161,14 +162,19 @@ namespace JupebPortal.Controllers
                     userForm.PlaceOfBirth = model.PlaceOfBirth;
                     userForm.Religion = model.Religion;
                     userForm.StateOfOrigin = model.StateOfOrigin;
-                    userForm.PicturePath = UploadPhotoFile(model);
-
+                    userForm.ModifiedAt = DateTime.UtcNow;
+                   
                     userForm.Programme1Id = model.Programme1Id;
                     userForm.Programme2Id = model.Programme2Id;
 
                     userForm.GuardEmail = model.GuardEmail;
                     userForm.GuardName = model.GuardName;
                     userForm.GuardPhone = model.GuardPhone;
+
+                    if (model.Photo != null)
+                    {
+                        userForm.PicturePath = UploadPhotoFile(model);
+                    }
                     await _context.SaveChangesAsync();
                 }
                 else
@@ -220,7 +226,7 @@ namespace JupebPortal.Controllers
 
         }
 
-        private string UploadPhotoFile(JupebFormViewModel model)
+        private string? UploadPhotoFile(JupebFormViewModel model)
         {
             string fileName = null;
             if (model.Photo != null)
@@ -238,36 +244,17 @@ namespace JupebPortal.Controllers
                 }
 
             }
+            else
+            {
+                return null;
+            }
 
             return fileName;
         }
 
 
 
-        // POST: ApplicationForm/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Applicant")]
-        //public async Task<IActionResult> Create([Bind("Id,UserId,Surname,FirstName,OtherName,Email,Phone,Address,City,Gender,DOB,State,Nationality,GuardName,GuardEmail,GuardAddress,GuardPhone,EntryMode,UTMEregNo,Programme1Id,Programme2Id")] ApplicationForm ApplicationForm)
-        public async Task<IActionResult> Create(ApplicationForm model)
-        {
-            var user = await _userManager.GetUserAsync(User);
-            model.User = user;
-            model.UserId = user.Id;
-            ModelState.Clear(); // Clear the model state to ensure the new values are validated
-
-            TryValidateModel(model);
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-            var result = await _service.Create(model);
-            
-            return RedirectToAction("Create", "ApplicationForm");
-        }
-
+        
         // GET: ApplicationForm/Edit/5
         //public async Task<IActionResult> Edit(int? id)
         //{
@@ -315,6 +302,7 @@ namespace JupebPortal.Controllers
 
             //TODO set isSubmitted to true here
             applicationForm.isSubmitted = true;
+            applicationForm.ModifiedAt = DateTime.UtcNow;
             await _context.SaveChangesAsync();
 
             //Send Registration Sucessfull Email

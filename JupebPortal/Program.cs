@@ -30,6 +30,7 @@ builder.Services.AddScoped<ISubjectService, SubjectService>();
 builder.Services.AddScoped<IApplicationFormService, ApplicationFormService>();
 builder.Services.AddScoped<IOLevelFormService, OLevelFormService>();
 builder.Services.AddScoped<UserManager<ApplicationUser>>();
+builder.Services.AddScoped<SignInManager<ApplicationUser>>();
 
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.Configure<SMTPConfig>(builder.Configuration.GetSection("SMTPConfig"));

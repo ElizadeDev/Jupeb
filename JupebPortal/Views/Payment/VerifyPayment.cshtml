@@ -4,7 +4,6 @@
 }
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jsSHA/2.0.2/sha512.js"></script> <!-- Include jsSHA library -->
 <div class="container p-3">
     <b />
 
@@ -77,7 +76,7 @@
             var statusMessageContainer = document.getElementById("statusMessage");
 
             $.ajax({
-                url: '/applicationfee/GetTransactionStatus',
+                url: '/payment/GetTransactionStatus',
                 type: 'GET',
                 data: { transactionId: transactionId },
                 success: function (response) {

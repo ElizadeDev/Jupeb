@@ -11,7 +11,7 @@ namespace JupebPortal.ViewModels
     {
         public string UserId { get; set; }
         [ForeignKey("UserId")]
-        public IdentityUser User { get; set; }
+        public ApplicationUser User { get; set; }
         public string Surname { get; set; }
         [Required]
         [DisplayName("First Name")]
@@ -69,8 +69,8 @@ namespace JupebPortal.ViewModels
         // Navigation properties for the foreign keys
         public Programme? Programme1 { get; set; }
         public Programme? Programme2 { get; set; }
-        [Required(ErrorMessage = "Picture is required.")]
-        public IFormFile Photo { get; set; }
+        
+        public IFormFile? Photo { get; set; }
        
     };
 
