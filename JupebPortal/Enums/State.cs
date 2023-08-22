@@ -36,7 +36,7 @@
 			Sokoto,
 			Taraba,
 			Yobe,
-			Zamfara
-
+			Zamfara,
+			FCT
 		}
 	}

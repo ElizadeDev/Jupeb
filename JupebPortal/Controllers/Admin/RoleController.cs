@@ -11,9 +11,11 @@ using Microsoft.AspNetCore.Identity;
 using JupebPortal.ViewModels;
 using System.Data;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace JupebPortal.Controllers.Admin
 {
+    [Authorize(Roles = "Admin")]
     public class RoleController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
@@ -29,7 +31,7 @@ namespace JupebPortal.Controllers.Admin
         }
 
         // GET: RoleModels
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             var roles = _roleManager.Roles;
             return View(roles);
@@ -227,6 +229,124 @@ namespace JupebPortal.Controllers.Admin
                     ModelState.AddModelError("", error.Description);
                 }
                 return View(model);
+            }
+        }
+
+
+        public IActionResult UserRoles()
+        {
+            var users = _userManager.Users.Select(c => new UserRolesViewModel()
+            {
+                UserId = c.Id,
+                Name = c.Surname + " " + c.FirstName,
+                Email = c.Email,
+                Role = string.Join(", ", _userManager.GetRolesAsync(c).Result.ToArray())
+            }).ToList();
+            return View(users);
+        }
+
+        public async Task<IActionResult> EditUserRoleAsync(string? userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (userId == null || _context.UserRoles == null)
+            {
+                return NotFound();
+            }
+
+            var userRoles = await _userManager.GetRolesAsync(user);
+
+            ViewBag.UserId = userId;
+            ViewBag.Username = user.Surname + " " + user.FirstName;
+            ViewBag.Email = user.Email;
+            return View(userRoles);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RemoveRole(string userId, string roleName)
+        {
+            var message = "";
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user == null)
+            {
+                // Handle the case where the user does not exist
+                message = "Error: No user selected.";
+                TempData["error"] = message;
+                return BadRequest(message);
+            }
+
+            var isInRole = await _userManager.IsInRoleAsync(user, roleName);
+
+            if (!isInRole)
+            {
+                // Handle the case where the user is not in the specified role
+                message = "Error: The user does not have the specified role.";
+                TempData["error"] = message;
+                return BadRequest(message);
+            }
+
+            var result = await _userManager.RemoveFromRoleAsync(user, roleName);
+
+            if (result.Succeeded)
+            {
+                // Role successfully removed
+                message = "Role removed successfully.";
+                TempData["success"] = message;
+                return Ok(message);
+            }
+            else
+            {
+                // Handle the case where the removal of role failed
+                message = "Error: Role removal failed.";
+                TempData["error"] = message;
+                return BadRequest(message);
+            }
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> AddRole(string roleName, string userId)
+        {
+            var message = "";
+
+            if (roleName == null)
+            {
+                message = "No role supplied.";
+                TempData["error"] = message;
+                return BadRequest(message);
+            }
+
+            var user = await _userManager.FindByIdAsync(userId);
+            var role = await _roleManager.FindByNameAsync(roleName);
+
+            if (user == null || role == null)
+            {
+                message = "Invalid user or role.";
+                TempData["error"] = message;
+                return BadRequest(message);
+            }
+
+            var userRoles = await _userManager.GetRolesAsync(user);
+
+            if (userRoles.Contains(role.Name))
+            {
+                message = "The user is already assigned to this role.";
+                TempData["error"] = message;
+                return BadRequest(message);
+            }
+            var result = await _userManager.AddToRoleAsync(user, role.Name);
+            if (result.Succeeded)
+            {
+                message = "Role successfully assigned to user";
+                TempData["success"] = message;
+                return Ok(new { message, roleName, userId });
+            }
+            else
+            {
+                message = "Error adding role";
+                TempData["error"] = message;
+                return BadRequest(message);
             }
         }
     }

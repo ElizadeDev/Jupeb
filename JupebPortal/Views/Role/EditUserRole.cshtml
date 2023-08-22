@@ -1,0 +1,126 @@
+﻿@model List<string>
+@{
+    ViewData["Title"] = "EditUserRole";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<h3>User Roles</h3>
+
+
+<p class="text-bg-secondary">User: @ViewBag.Username (@ViewBag.Email)</p>
+
+@if (Model.Count > 0)
+{
+    <table class="table table-responsive" id="UserRolesTable">
+        <thead>
+            <tr>
+                <th>Role</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var role in Model)
+            {
+                <tr>
+                    <td>@role</td>
+                    <td>
+                        <form asp-controller="Role" asp-action="RemoveRole" method="post" class="ajax-form">
+                            <input type="hidden" name="userId" value="@ViewBag.UserId" />
+                            <input type="hidden" name="roleName" value="@role" />
+                            <button class="btn btn-danger" type="submit">Remove</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    
+}
+else
+{
+    <table class="table table-responsive" id="UserRolesTable">
+    </table>
+    <p>No roles assigned to the user.</p>
+}
+<div id="addRoleContainer">
+    <button id="addRoleButton" class="btn btn-primary">Assign new role</button>
+    <br /><br />
+    <div id="addRoleForm" style="display: none;">
+        <input type="text" id="newRoleText" />
+        <button id="saveRoleButton" class="btn btn-success">Save</button>
+    </div>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" integrity="sha512-vKMx8UnXk60zUwyUnUPM3HbQo8QfmNx7+ltw8Pm5zLusl1XIfwcxo8DbWCqMGKaWeNxWA8yrx5v3SaVpMvR3CA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<script type="text/javascript">
+    $(function () {
+        $('#addRoleButton').click(function () {
+            $('#addRoleForm').show();
+            $('#newRoleText').focus();
+        });
+
+        $('#saveRoleButton').click(function () {
+            var newRole = $('#newRoleText').val();
+
+            $.ajax({
+                url: '@Url.Action("AddRole", "Role")',
+                type: 'POST',
+                data: { roleName: newRole, userId: "@ViewBag.UserId" },
+                success: function (data) {
+                    console.log(data.message);
+                    toastr.success(data.message);
+
+                    var table = document.getElementById("UserRolesTable");
+                    var row = table.insertRow();
+                    var roleCell = row.insertCell(0);
+                    roleCell.innerHTML = data.roleName;
+                    var actionCell = row.insertCell(1);
+                    actionCell.innerHTML = `<form asp-controller="Role" asp-action="RemoveRole" method="post" class="ajax-form">
+                                <input type="hidden" name="userId" value="${data.userId}" />
+                                <input type="hidden" name="roleName" value="${data.roleName}" />
+                                <button class="btn btn-danger" type="submit">Remove</button>
+                            </form>`;
+
+                    $('#addRoleForm').hide();
+                    $('#newRoleText').val('');
+                },
+                error: function (xhr) {
+                    console.log(xhr.responseText);
+                    toastr.error(xhr.responseText);
+                }
+            });
+        });
+    });
+</script>
+
+<script>
+    $(function () {
+        $('.ajax-form').submit(function (e) {
+            e.preventDefault();
+
+            var form = $(this);
+            var formData = form.serialize(); // Serialize form data
+            var button = form.find('button');
+
+            $.ajax({
+                url: form.attr('action'), // Get the form action URL
+                type: form.attr('method'), // Get the form method
+                data: formData,
+                success: function (response) {
+                    console.log(response);
+                    toastr.success(response);
+                    button.closest("tr").remove();
+                },
+                error: function (xhr, status, error) {
+                    console.error(xhr.responseText);
+                    toastr.error(xhr.responseText);
+                }
+            });
+        });
+    });
+</script>
+

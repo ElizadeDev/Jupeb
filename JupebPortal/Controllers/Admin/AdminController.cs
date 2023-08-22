@@ -26,7 +26,23 @@ namespace JupebPortal.Controllers.Admin
         {
             // Get the current user
             var currentUser = await _userManager.GetUserAsync(User);
+            var numForms = await _context.ApplicationForms.CountAsync();
+            var Users = await _userManager.Users.CountAsync();
+            var payments = await _context.Payments.Where(m => m.IsSuccess == true).CountAsync();
 
+            var totalApplicationFees = await _context.Payments
+                 .Where(m => m.IsSuccess == true)
+                    .SumAsync(m => m.Amount);
+
+
+
+            string totalApplicationFee = totalApplicationFees.ToString("N0");
+
+            ViewBag.numForms = numForms;
+            ViewBag.Users = Users;
+            ViewBag.Payment = payments;
+            ViewBag.AppFee = totalApplicationFee;
+            
             if (currentUser != null)
             {
                 // Access the user's unique identifier
