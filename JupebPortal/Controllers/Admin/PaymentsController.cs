@@ -9,16 +9,18 @@ using JupebPortal.ViewModels;
 
 namespace JupebPortal.Controllers.Admin
 {
-    [Authorize(Roles = "Admin,Bursary officer")]
+    [Authorize(Roles = "Admin,Bursary officer,Admission officer")]
     public class PaymentsController : Controller
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public PaymentsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        public PaymentsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             _context = context;
             _userManager = userManager;
+            _roleManager = roleManager;
         }
 
         // GET: Payments
@@ -67,9 +69,34 @@ namespace JupebPortal.Controllers.Admin
             return View(applicationFeeModel);
         }
 
+
+        private string GenerateString()
+        {
+            //DateTime now = DateTime.Now;
+            TimeZoneInfo timeZone = TimeZoneInfo.FindSystemTimeZoneById("Central European Standard Time");
+            DateTimeOffset now = DateTimeOffset.UtcNow.ToOffset(timeZone.GetUtcOffset(DateTimeOffset.UtcNow));
+
+            string prefix = "1234";
+            string year = now.Year.ToString().Substring(2); ;
+            string month = now.Month.ToString().PadLeft(2, '0');
+            string day = now.Day.ToString().PadLeft(2, '0');
+            string hour = now.Hour.ToString().PadLeft(2, '0');
+            string minute = now.Minute.ToString().PadLeft(2, '0');
+            string second = now.Second.ToString().PadLeft(2, '0');
+
+            Random random = new Random();
+            int randomNumber = random.Next(10, 99);
+
+            string result = $"{prefix}{year}{month}{day}{hour}{minute}{second}{randomNumber}";
+
+            return result;
+        }
+
+
         // GET: Payments/Create
         public async Task<IActionResult> Create()
         {
+            ViewBag.TransactionID = GenerateString();
             var applicants = (await _userManager.Users.ToListAsync())
                 .OrderBy(u => u.Surname)
                 .Select(u => new SelectListItem
@@ -87,12 +114,33 @@ namespace JupebPortal.Controllers.Admin
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,UserId,PaymentRef,TransactionID,Amount,Purpose,IsSuccess,PaymentDate")] Payment payment)
+        public async Task<IActionResult> Create([Bind("Id,UserId,PaymentRef,TransactionID,Amount,Purpose,IsSuccess,PaymentChannel,PaymentDate")] Payment payment)
         {
             if (ModelState.IsValid)
             {
                 _context.Add(payment);
                 await _context.SaveChangesAsync();
+
+                var roleExists = await _roleManager.RoleExistsAsync("Applicant");
+
+                if (!roleExists)
+                {
+                    var newRole = new IdentityRole("Applicant");
+                    var createRoleResult = await _roleManager.CreateAsync(newRole);
+                }
+                else
+                {
+                    var user = await _userManager.FindByIdAsync(payment.UserId);
+                    if (user != null)
+                    {
+                        var addToRoleResult = await _userManager.AddToRoleAsync(user, "Applicant");
+                        if (!addToRoleResult.Succeeded)
+                        {
+                            // Handle adding user to role failure
+                        }
+                    }
+                }
+
                 return RedirectToAction(nameof(Index));
             }
             return View(payment);

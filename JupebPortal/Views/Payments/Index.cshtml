@@ -5,12 +5,16 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2 class="text-primary">Payments</h2>
+<div class="row pt-4">
+    <div class="col-6">
+        <h2 class="text-primary">Payments</h2>
+    </div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table table-responsive" id="myTable">
+    <div class="col-6 text-end">
+        <a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-circle-fill"></i> &nbsp; Add Payment</a>
+    </div>
+</div>
+<table class="table table-bordered table-striped" style="width:100%" id="myTable">
     <thead>
         <tr>
             <th>
@@ -23,7 +27,7 @@
                 RRR
             </th>
             <th>
-               Transaction ID
+                Transaction ID
             </th>
             <th>
                 Amount
@@ -31,7 +35,7 @@
             <th>
                 Purpose
             </th>
-            
+
             <th>
                 Date
             </th>
@@ -40,45 +44,46 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model.OrderByDescending(p => p.Payment.PaymentDate)) {
-        <tr>
-            <td>
+        @foreach (var item in Model.OrderByDescending(p => p.Payment.PaymentDate))
+        {
+            <tr>
+                <td>
                     @Html.DisplayFor(modelItem => item.UserEmail)
-            </td>
-            <td>
+                </td>
+                <td>
                     @Html.DisplayFor(modelItem => item.UserName)
-            </td>
-            <td>
+                </td>
+                <td>
                     @Html.DisplayFor(modelItem => item.Payment.PaymentRef)
-            </td>
-            <td>
+                </td>
+                <td>
                     @Html.DisplayFor(modelItem => item.Payment.TransactionID)
-            </td>
-            <td>
+                </td>
+                <td>
                     @Html.DisplayFor(modelItem => item.Payment.Amount)
-            </td>
-            <td>
+                </td>
+                <td>
                     @Html.DisplayFor(modelItem => item.Payment.Purpose)
-            </td>
-            
-            <td>
+                </td>
+
+                <td>
                     @Html.DisplayFor(modelItem => item.Payment.PaymentDate)
-            </td>
-            <td>
+                </td>
+                <td>
                     @if (item.Payment.IsSuccess == false)
                     {
-                    <a id="@item.Payment.TransactionID" class="btn btn-primary btn-sm" role="button" asp-controller="Admin" asp-action="VerifyPayment" asp-route-transactionId="@item.Payment.TransactionID">Check</a>
+                        <a id="@item.Payment.TransactionID" class="btn btn-primary btn-sm" role="button" asp-controller="Admin" asp-action="VerifyPayment" asp-route-transactionId="@item.Payment.TransactionID">Check</a>
                     }
-            </td>
-            
-                
-            @*<td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+
+
+                @*<td>
+            <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+            <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
             </td>*@
-        </tr>
-}
+            </tr>
+        }
     </tbody>
 </table>
 
@@ -90,7 +95,7 @@
         $(document).ready(function () {
             DataTable.datetime('dd LL yyyy HH: mm: ss');
             new DataTable('#myTable', {
-                
+
                 //order: [[5, 'desc']]
                 "ordering": false
             });

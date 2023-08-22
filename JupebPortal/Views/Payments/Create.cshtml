@@ -25,30 +25,45 @@
                 <span asp-validation-for="UserId" class="text-danger"></span>
             </div>*@
             <div class="form-group">
-                <label asp-for="PaymentRef" class="control-label"></label><span> (optional)</span>
+                <label asp-for="PaymentRef" class="control-label"></label><span> or bank reference number (optional)</span>
                 <input asp-for="PaymentRef" class="form-control" />
                 
                 <span asp-validation-for="PaymentRef" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="TransactionID" class="control-label"></label>
-                <input asp-for="TransactionID" class="form-control" />
+                <input asp-for="TransactionID" class="form-control" value="@ViewBag.TransactionID" readonly />
                 <span asp-validation-for="TransactionID" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Amount" class="control-label"></label>
-                <input asp-for="Amount" class="form-control" />
+                @* <input asp-for="Amount" class="form-control" /> *@
+                <input name="Amount" class="form-control" type="number" value="10500"/>
                 <span asp-validation-for="Amount" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Purpose" class="control-label"></label>
-                <input asp-for="Purpose" class="form-control" />
+                @* <input asp-for="Purpose" class="form-control" /> *@
+                <select asp-for="Purpose" class="form-control" id="purposeSelect">
+                    <option>Jupeb Application Fee</option>
+                </select>
                 <span asp-validation-for="Purpose" class="text-danger"></span>
             </div>
-            <div class="form-group form-check">
+            <div class="form-group form-check" style="display: none;">
                 <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsSuccess" /> @Html.DisplayNameFor(model => model.IsSuccess)
+                    <input class="form-check-input" asp-for="IsSuccess" checked/> @Html.DisplayNameFor(model => model.IsSuccess)
                 </label>
+            </div>
+            <div class="form-group">
+                <label asp-for="PaymentChannel" class="control-label"></label>
+                @* <input asp-for="PaymentChannel" class="form-control" /> *@
+                <select asp-for="PaymentChannel" class="form-control">
+                    <option>Remita</option>
+                    <option>Transfer</option>
+                    <option>Bank deposit</option>
+                    <option>Other</option>
+                </select>
+                <span asp-validation-for="PaymentChannel" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="PaymentDate" class="control-label"></label>
