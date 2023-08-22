@@ -81,9 +81,12 @@ namespace JupebPortal.Repository.Service
                     await _emailService.PDSendEmailForForgotPassword(options);
 
             }
-            catch
+            catch (Exception ex)
             {
+                var title = "Forgot Password Error";
+                var message = ex.InnerException?.Message ?? ex.Message;
 
+                await _emailService.SendErrorMail(title, message, "SendForgotPasswordEmail");
             }
         }
     }

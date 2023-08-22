@@ -35,11 +35,13 @@ namespace JupebPortal.Controllers
             {
                 // code here
                 var user = await _services.GetUserByEmailAsync(model.Email);
-                if (user != null)
+                if (user == null)
                 {
-                    await _services.GenerateForgotPasswordTokenAsync(user);
+                    ModelState.Clear();
+                    model.EmailSent = false;
+                    return View(model);
                 }
-
+                await _services.GenerateForgotPasswordTokenAsync(user);
                 ModelState.Clear();
                 model.EmailSent = true;
             }

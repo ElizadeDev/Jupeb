@@ -13,6 +13,7 @@ namespace JupebPortal.Repository.AppServices
         //Task SendEmailForForgotPassword(UserEmailOptions userEmailOptions);
         Task<bool> PDSendEmailRegistrationSuccess(UserEmailOptions userEmailOptions);
         Task<bool> PDSendEmailForForgotPassword(UserEmailOptions userEmailOptions);
+        Task<bool> SendErrorMail(string errorTitle, string errorMsg, string errorSource);
     }
 
 }

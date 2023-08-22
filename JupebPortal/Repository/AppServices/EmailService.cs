@@ -15,8 +15,12 @@ namespace JupebPortal.Repository.AppServices
 {
     public class EmailService : IEmailService
     {
-        private const string templatePath = @"EmailTemplate/{0}.html";
-        private readonly SMTPConfig _smtpConfig;
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        //private string templatePath = @"../../EmailTemplate/{0}.html";
+        public EmailService(IWebHostEnvironment webHostEnvironment)
+        {
+            _webHostEnvironment = webHostEnvironment;
+        }
 
         public async Task<bool> PDSendEmailRegistrationSuccess(UserEmailOptions userEmailOptions)
         {
@@ -38,15 +42,9 @@ namespace JupebPortal.Repository.AppServices
             return res;
         }
 
-        public EmailService(IOptions<SMTPConfig> smtpConfig)
-        {
-            _smtpConfig = smtpConfig.Value;
-        }
-
-
         private string GetEmailBody(string templateName)
         {
-            var body = File.ReadAllText(string.Format(templatePath, templateName));
+            var body = File.ReadAllText($"./EmailTemplate/{templateName}.html");
             return body;
         }
 
@@ -73,7 +71,7 @@ namespace JupebPortal.Repository.AppServices
             //var Isauthenticated = await SendMail.AuthenticateSenderDomain("admin@projectdriveng.com.ng", "nimda9876@Elo");
             var Isauthenticated = await SendMail.AuthenticateSenderDomain("info.admission@elizadeuniversity.edu.ng", "xkqchlmyfhppchsf");
 
-            var res = SendMail.SendSingleEmail(new PD.EmailSender.Helpers.Model.MessageModel
+            var res = await SendMail.SendSingleEmailUsingHttpClient(new PD.EmailSender.Helpers.Model.MessageModel
             {
                 Subject = userEmailOptions.Subject,
                 EmailAddresses = userEmailOptions.ToEmails.ToArray(),
@@ -84,5 +82,22 @@ namespace JupebPortal.Repository.AppServices
             return res;
         }
 
+
+        public async Task<bool> SendErrorMail(string errorTitle, string errorMsg, string errorSource)
+        {
+            var Isauthenticated = await SendMail.AuthenticateSenderDomain("info.admission@elizadeuniversity.edu.ng", "xkqchlmyfhppchsf");
+
+            var res = await SendMail.SendSingleEmailUsingHttpClient(new PD.EmailSender.Helpers.Model.MessageModel
+            {
+                Subject = errorTitle,
+                EmailAddresses = new string[] { "info.admission@elizadeuniversity.edu.ng" },
+                EmailDisplayName = "Elizade ErrorMessage: ",
+                Message = $" Error Message : {errorMsg} <br /> Method Name: {errorSource}"
+
+            }, Isauthenticated.Settings);
+
+            return res;
+        }
+
     }
-    }
+}
