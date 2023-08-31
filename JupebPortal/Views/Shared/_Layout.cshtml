@@ -2,6 +2,7 @@
 
 @inject UserManager<ApplicationUser> UserManager
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -91,12 +92,22 @@
                 <ul class="list-unstyled components mb-2">
                     <li class="active text-warning">
                         <a asp-action="Index" asp-controller="Home" aria-expanded="false">DASHBOARD</a>
-                        @if (User.IsInRole("applicant"))
+                        @if (User.IsInRole("Applicant"))
                         {
                             <ul class="list-unstyled components mb-2">
-                                @*<li class="active">
-                                    <a href="https://euconnect.com.ng/application-form-2023-2024/"><span class="fa fa-home mr-3"></span> Complete Bio-Data Form</a>
-                                </li>*@
+                                @{
+                                    var isSubmitted = false;
+                                    if (ViewBag.applicationForm != null)
+                                    {
+                                        isSubmitted = ViewBag.applicationForm.isSubmitted;
+                                    }
+                                }
+                                @if(isSubmitted == true){
+                                    <li class="active">
+                                        <a href="https://euconnect.com.ng/application-form-2023-2024/" target="_blank"><span class="fa fa-home mr-3"></span> Complete Bio-Data Form</a>
+                                    </li>
+                                }
+                                
                                 @* <li>
                             <a href="#"><span class="fa fa-user mr-3"></span> Payments</a>
                             </li>*@

@@ -79,7 +79,7 @@ namespace JupebPortal.Controllers
                     }
 
                     // User has completed payment. Proceed to home page
-                    return View("ApplicationSuccess");
+                    return RedirectToAction("ApplicationSuccess");
                 }
             }
             // User has no successful payment record. Redirect to New Applicant Index
@@ -92,8 +92,11 @@ namespace JupebPortal.Controllers
             ViewBag.existingTransactions = await _context.Payments.Where(p => p.UserId == user.Id).ToListAsync();
             return View(user);
         }
-        public IActionResult ApplicationSuccess(string id)
+        public async Task<IActionResult> ApplicationSuccess()
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var applicationForm = await _context.ApplicationForms.Where(p => p.UserId == userId).FirstOrDefaultAsync();
+            ViewBag.applicationForm = applicationForm;
             return View();
         }
 
